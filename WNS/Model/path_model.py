@@ -2,6 +2,7 @@ from typing import Set
 from ..Controller.warehouse_controller import Shelf
 
 
+
 # =============================================================================
 # You should probably put these in seperate files for your own sanity
 # =============================================================================
@@ -27,9 +28,11 @@ def find_item_list_path(items):
 ##################################
 
 
-def prep_data_for_computation(shelves: Set[Shelf]):
+def prep_data_for_computation(arr, shelves):
     # =============================================================================
     #     idk what data type you want to use to easily work with the warehouse
     #     so for now main is just passing Set[Shelf] whenever someone needs a Warehouse
     # =============================================================================
-    pass
+    for key in shelves:
+        arr[shelves[key][0]][shelves[key][1]] = 'X'
+
