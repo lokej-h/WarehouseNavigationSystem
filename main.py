@@ -4,6 +4,7 @@ if __name__ == "__main__":
     shelves = WNS.get_warehouse_shelves(WNS.config.WAREHOUSE_DATA_DIR)
     WNS.prep_data_for_computation(shelves)
     decision = WNS.display_start()
+    print("test")
     while decision != WNS.MenuDecision.QUIT:
         if decision == WNS.MenuDecision.FIND_ITEM:
             item = WNS.get_one_item()
