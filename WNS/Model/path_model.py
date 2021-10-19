@@ -34,5 +34,6 @@ def prep_data_for_computation(arr, shelves):
     #     so for now main is just passing Set[Shelf] whenever someone needs a Warehouse
     # =============================================================================
     for key in shelves:
-        arr[shelves[key][0]][shelves[key][1]] = 'X'
+        arr[shelves[key][0]+1][shelves[key][1]+1] = 'X'
+
 
