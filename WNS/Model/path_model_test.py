@@ -29,4 +29,5 @@ def test_make_step():
 def test_find_item_list_path(shelves):
     path = path_model.find_item_list_path((0, 0), [1], shelves)
     assert path == [(0, 0), (1, 0), (1, 1), (1, 2)]
+    assert all([step not in shelves.values() for step in path])
 
