@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Set
+from typing import Dict, List
 from .SharedTypes.Shelf import Shelf
 
 
@@ -17,7 +17,7 @@ def get_item_list():
 ##################################
 
 
-def get_warehouse_shelves(file_path: Path) -> Set[Shelf]:
+def get_warehouse_shelves(file_path: Path) -> Dict[int, List[int, int]]:
     # with open(file_path) as file:
     #     colnames = file.readline().split()
     #     shelves = set()

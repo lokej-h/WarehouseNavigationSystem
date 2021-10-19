@@ -17,12 +17,12 @@ class Warehouse:
     pass
 
 
-def find_item(item):
-    pass
+def find_item(item, shelves) -> tuple(int, int):
+    return shelves[item]
 
 
-def find_item_list_path(items):
-    pass
+def find_item_list_path(items: List[int], shelves):
+    # ignore list, we are only grabbing the first item
 
 
 ##################################
