@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from typing import Set
-from ..Controller.warehouse_controller import Shelf
+from ..SharedTypes.Shelf import Shelf
 from .menu import MenuDecision
 
 
@@ -28,7 +28,7 @@ def print_warehouse(arr) -> None:
         else:
             print(i, end = " ")
         for j in range(len(arr[i])):
-            print(arr[i][j], end=' ')
+            print(arr[i][j], end=" ")
         print()
     pass
 
