@@ -54,12 +54,16 @@ if __name__ == "__main__":
             print()
         if val == '2':
             pid = input("Enter product ID of the product you are searching for: ")
-            print("The product with ID: ", pid, "is at the following location: (", shelves[pid][0] + 1, chr(shelves[pid][1] + 98), ')')
-            arr[shelves[pid][0]+1][shelves[pid][1]+1] = 'O'
-            print("The following is the map of the warehouse, with the product selected being denoted by an O")
-            print_warehouse(arr)
-            arr[shelves[pid][0]+1][shelves[pid][1]+1] = 'X'
-            print()
+            try:
+                print("The product with ID: ", pid, "is at the following location: (", shelves[pid][0] + 1, chr(shelves[pid][1] + 98), ')')
+                arr[shelves[pid][0]+1][shelves[pid][1]+1] = 'O'
+                print("The following is the map of the warehouse, with the product selected being denoted by an O")
+                print_warehouse(arr)
+                arr[shelves[pid][0]+1][shelves[pid][1]+1] = 'X'
+                print()
+            except KeyError:
+                print("Product with ID provided not found.")
+                print()
         if val == '3':
             print("todo")
             print()
