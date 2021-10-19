@@ -14,8 +14,29 @@ if __name__ == "__main__":
     print(max(find_max_x))
     print(max(find_max_y))
 
-    rows, cols = (max(find_max_x) + 5, max(find_max_y) + 5)
+
+    rows, cols = (max(find_max_x) + 4, max(find_max_y) + 3)
     arr = [['.' for i in range(cols)] for j in range(rows)]
+    for i in range(1, rows):
+        for j in range(1, cols):
+            if j > 9:
+                arr[i][j] = '.' + ' '
+            else:
+                arr[i][j] = '.'
+
+    for i in range(1,len(arr)):
+        if i < 11:
+            arr[i][0] = str(i-1) + ' '
+        else:
+            arr[i][0] = str(i-1)
+
+    for i in range(1,len(arr[0])):
+        if i == 1:
+           arr[0][i] = ' ' + str(i-1) 
+        # elif i < 11:
+        #     arr[0][i] = str(i-1) + ' '
+        else:
+            arr[0][i] = str(i-1)
 
 
     prep_data_for_computation(arr, shelves)
