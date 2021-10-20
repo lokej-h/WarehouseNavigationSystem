@@ -2,7 +2,7 @@
 from typing import Set
 from ..SharedTypes.Shelf import Shelf
 from .menu import MenuDecision
-
+from . import view_helpers
 
 def display_start() -> int:
     val = input("Enter what you would like to do on the warehouse application.\nThe following are your options\n1. Print the Warehouse view to see the products in the warehouse.\n2. Enter a product ID to see where in the warehouse you can find the product.\n3. Enter a product ID to find navigation steps to that product.\n4. Quit navigation and end program\n")
@@ -23,7 +23,7 @@ def print_warehouse(arr) -> None:
 
 
 
-    for i in range(len(arr)):
+    for i in range(1, len(arr)):
         if i < 10:
             print(i, end = "  ")
         else:
@@ -38,7 +38,7 @@ def print_warehouse(arr) -> None:
 # you should move these into a new module
 def show_item_location(pid, arr, shelves):
     try:
-        print("The product with ID: ", pid, "is at the following location: (", shelves[pid][0] + 1, chr(shelves[pid][1] + 98), ')')
+        print("The product with ID: ", pid, "is at the following location: (", shelves[pid][0] + 1, view_helpers.int_to_cap_letter(shelves[pid][1]+2), ')')
         arr[shelves[pid][0]+1][shelves[pid][1]+1] = 'O'
         print("The following is the map of the warehouse, with the product selected being denoted by an O")
         print_warehouse(arr)
