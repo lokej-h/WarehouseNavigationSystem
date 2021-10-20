@@ -54,8 +54,6 @@ def init_array(shelves):
     for key in shelves:
         find_max_x.append(shelves[key][0])
         find_max_y.append(shelves[key][1])
-    print(max(find_max_x))
-    print(max(find_max_y))
     rows, cols = (max(find_max_x) + 3, max(find_max_y) + 3)
     arr = [['.' for i in range(cols)] for j in range(rows)]
     return arr
