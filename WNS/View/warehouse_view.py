@@ -14,7 +14,7 @@ def print_warehouse(arr) -> None:
     #     depending on whether you'd rather work with the warehouse data type
     #     Model team is working on, "warehouse" type may change
     # =============================================================================
-
+    print("______________\n|Legend      |\n|X : Shelf   |\n|. : Empty   |\n|O : Product |\n--------------")
     print("  ", end = " ")
     for i in range(ord('A'), ord('W') + 1):
         print(chr(i), end = " ")
@@ -31,9 +31,10 @@ def print_warehouse(arr) -> None:
         for j in range(len(arr[i])):
             print(arr[i][j], end=" ")
         print()
+
+    
     pass
-
-
+    
 # you should move these into a new module
 def show_item_location(arr, shelves):
     pid = input("Enter product ID of the product you are searching for: ")
