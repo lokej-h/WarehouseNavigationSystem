@@ -20,7 +20,7 @@ class Warehouse:
 def find_item(
     item: List[int], shelves: Dict[int, List[Tuple[int, int]]]
 ) -> Tuple[int, int]:
-    return shelves[item]
+    return tuple([shelves[item][0], shelves[item][1]+1])
 
 
 def make_step(direction, start_coord, i):
@@ -101,7 +101,7 @@ def find_item_list_path(
 
     # get where the item is
     end_coords = find_item(item, shelves)
-    # print(f"shelf access {end_coords}")
+    # print(f"shelf access {end_coords[0]+1}, {chr(ord('@')+end_coords[1]+1)}")
     # and check if a shelf is to the right
     if (end_coords[0]+1, end_coords[1]) not in shelf_lookup:
         end_coords = (end_coords[0]+1, end_coords[1])
@@ -115,7 +115,7 @@ def find_item_list_path(
         end_coords = (end_coords[0], end_coords[1]-1)
     else:
         raise Exception("We can't access this shelf!")
-    # print(f"can access shelf from {end_coords}")
+    # print(f"can access shelf from {end_coords[0]+1}, {chr(ord('@')+end_coords[1]+1)}")
 
     # make a basic path
 
