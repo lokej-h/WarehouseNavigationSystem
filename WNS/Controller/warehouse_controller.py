@@ -1,15 +1,5 @@
 from pathlib import Path
 from typing import Dict, List, Tuple
-from ..SharedTypes.Shelf import Shelf
-
-
-# =============================================================================
-# TODO: Move these functions out
-# =============================================================================
-
-
-
-##################################
 
 
 def get_warehouse_shelves(file_path: Path) -> Dict[int, List[Tuple[int, int]]]:

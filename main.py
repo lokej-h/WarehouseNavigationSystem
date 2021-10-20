@@ -5,25 +5,26 @@ if __name__ == "__main__":
     arr = WNS.init_array(shelves)
 
     WNS.prep_data_for_computation(arr, shelves)
-    val = '0'
-    while val != '4':
+    val = "0"
+    while val != "4":
         val = WNS.display_start()
-        if val == '1':
+        if val == "1":
             WNS.print_warehouse(arr)
             print()
-        if val == '2':
+        if val == "2":
             pid = WNS.get_one_item()
             WNS.show_item_location(pid, arr, shelves)
-        if val == '3':
+        if val == "3":
             items = WNS.get_item_list()
-            path = WNS.find_item_list_path((0,0), items, shelves)
+            path = WNS.find_item_list_path((0, 0), items, shelves)
             WNS.show_item_location(items[0], arr, shelves)
-            print(f"\nThe path to the item is \n{WNS.show_path(path)}")
-        if val == '4':
+            print(f"\nThe path to the item is \n")
+            WNS.show_path(path)
+        if val == "4":
             break
 
-    #WNS.prep_data_for_computation(shelves)
-    
+    # WNS.prep_data_for_computation(shelves)
+
     # decision = WNS.display_start()
     # print("test")
     # while decision != WNS.MenuDecision.QUIT:

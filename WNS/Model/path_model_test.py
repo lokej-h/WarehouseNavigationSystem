@@ -20,6 +20,7 @@ def shelves():
         shelves[i] = raw_shelves[i]
     return shelves
 
+
 @pytest.fixture
 def shelves2():
     raw_shelves = [
@@ -31,16 +32,19 @@ def shelves2():
         shelves[i] = raw_shelves[i]
     return shelves
 
+
 def test_make_step():
-    assert path_model.make_step(0, (0,0), 1) == (1,0)
-    assert path_model.make_step(1, (0,0), 1) == (0,1)
-    assert path_model.make_step(0, (0,1), 2) == (2,1)
-    assert path_model.make_step(1, (1,0), 2) == (1,2)
+    assert path_model.make_step(0, (0, 0), 1) == (1, 0)
+    assert path_model.make_step(1, (0, 0), 1) == (0, 1)
+    assert path_model.make_step(0, (0, 1), 2) == (2, 1)
+    assert path_model.make_step(1, (1, 0), 2) == (1, 2)
+
 
 def test_find_item_list_path(shelves):
     path = path_model.find_item_list_path((0, 0), [1], shelves)
     assert path == [(0, 0), (0, 1), (0, 2), (1, 2)]
     assert all([step not in shelves.values() for step in path])
+
 
 # =============================================================================
 # def test_find_item_list_path2(shelves2):
