@@ -14,3 +14,19 @@ If the warehouse file is not named like the file above, rename it to match “qv
 ## Usage
 
 Double click `main.exe` to start the program.
+
+## Building from source
+
+Install PyInstaller using the command - pip install pyinstaller
+
+Using pyinstaller, run the command - pyinstaller --onefile [filename] to create an executable file. This command will output two new directories DIST and BUILD and a .spec file with the same name as the filename. Inside the DIST directory, you will find the executable named [filename].exe
+
+## Milestones
+
+- [x] Basic UI
+- [x] Reading and parsing warehouse file
+- [x] Find any item
+- [x] Basic pathfinding 
+- [x] Print path
+- [ ] Full MVC compliance
+- [ ] Start pathfinding from any open space
