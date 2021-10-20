@@ -1,9 +1,11 @@
 from typing import Dict, List, Tuple
-
-
+import itertools
+import random
 # =============================================================================
 # You should probably put these in seperate files for your own sanity
 # =============================================================================
+HORI = 0
+VERT = 1
 
 
 class POIGraph:
@@ -28,13 +30,34 @@ def make_step(direction, start_coord, i):
     return tuple(next_step)
 
 
-def go_until_end(horizontal, start_coord, end_coords, shelf_lookup, path):
+def safe_make_step(direction, start_coord, i, shelf_lookup):
+    step = make_step(direction, start_coord, i)
+    if step not in shelf_lookup:
+        return step
+    return None
+
+
+def muck_about(last_coord, shelf_lookup):
+    dirs = [HORI, VERT]
+    deltas = [1, -1]
+    # randomly go in a valid direction
+    for l in [dirs, deltas]:
+        random.shuffle(l)
+    print("\tmuck about")
+    for direction, value in itertools.product(dirs, deltas):
+        step = safe_make_step(direction, last_coord,
+                              last_coord[direction]+value, shelf_lookup)
+        print(f"trying to go to {step}")
+        if step:
+            return step
+    raise Exception("how'd you get yourself stuck?")
+
+
+def go_until_end(direction, start_coord, end_coords, shelf_lookup, path):
     '''function to either go horizontally or vertically'''
-    if horizontal:
-        direction = 0
+    if direction == 0:
         print("horizontal")
     else:
-        direction = 1
         print("vertical")
     print(f"starting at {start_coord}")
     print(f"going from {start_coord[direction]} to {end_coords[direction]}")
@@ -98,9 +121,19 @@ def find_item_list_path(
     last_coord = start_coord
     while end_coords != last_coord:
         path, last_coord = go_until_end(
-            True,  last_coord, end_coords, shelf_lookup, path)
+            HORI,  last_coord, end_coords, shelf_lookup, path)
+        horiz = last_coord
         path, last_coord = go_until_end(
-            False, last_coord, end_coords, shelf_lookup, path)
+            VERT, last_coord, end_coords, shelf_lookup, path)
+        if horiz == last_coord:
+            # this means we got stuck on something
+            print("we are stuck!")
+            print("try randomly walking around")
+            path.append(muck_about(last_coord, shelf_lookup))
+            path.append(muck_about(path[-1], shelf_lookup))
+            path.append(muck_about(path[-1], shelf_lookup))
+            path.append(muck_about(path[-1], shelf_lookup))
+            last_coord = path[-1]
     return path
 
 
