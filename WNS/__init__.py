@@ -1,3 +1,15 @@
+from .View.warehouse_view import (
+    display_start,
+    show_item_location,
+    show_path,
+    init_array,
+    print_warehouse
+)
+from .Model.path_model import (
+    prep_data_for_computation,
+    find_item,
+    find_item_list_path
+)
 from ._config import config
 from .View.menu import MenuDecision
 
@@ -7,18 +19,9 @@ from .View.menu import MenuDecision
 # =============================================================================
 from .Controller.warehouse_controller import (
     get_warehouse_shelves,
+
+)
+from.Controller.item_controller import (
     get_one_item,
     get_item_list,
-)
-from .Model.path_model import (
-    prep_data_for_computation,
-    find_item,
-    find_item_list_path
-)
-from .View.warehouse_view import (
-    display_start,
-    show_item_location,
-    show_path,
-    init_array,
-    print_warehouse
 )
