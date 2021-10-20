@@ -94,7 +94,7 @@ def find_item_list_path(
     item = items[0]
 
     # make a shelf lookup table
-    shelf_lookup = set([tuple(x) for x in shelves.values()])
+    shelf_lookup = set([tuple([x[0]+1, x[1]+1]) for x in shelves.values()])
 
     # get where the item is
     end_coords = find_item(item, shelves)
@@ -121,10 +121,10 @@ def find_item_list_path(
     last_coord = start_coord
     while end_coords != last_coord:
         path, last_coord = go_until_end(
-            HORI,  last_coord, end_coords, shelf_lookup, path)
+            VERT,  last_coord, end_coords, shelf_lookup, path)
         horiz = last_coord
         path, last_coord = go_until_end(
-            VERT, last_coord, end_coords, shelf_lookup, path)
+            HORI, last_coord, end_coords, shelf_lookup, path)
         if horiz == last_coord:
             # this means we got stuck on something
             print("we are stuck!")
