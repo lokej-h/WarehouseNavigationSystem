@@ -10,5 +10,15 @@ from .Controller.warehouse_controller import (
     get_one_item,
     get_item_list,
 )
-from .Model.path_model import prep_data_for_computation, find_item, find_item_list_path
-from .View.warehouse_view import display_start, show_item_location, show_path
+from .Model.path_model import (
+    prep_data_for_computation,
+    find_item,
+    find_item_list_path
+)
+from .View.warehouse_view import (
+    display_start,
+    show_item_location,
+    show_path,
+    init_array,
+    print_warehouse
+)

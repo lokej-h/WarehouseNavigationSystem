@@ -1,10 +1,8 @@
 import WNS
-from WNS.View.warehouse_view import *
-from WNS.Model.path_model import *
 
 if __name__ == "__main__":
     shelves = WNS.get_warehouse_shelves(WNS.config.WAREHOUSE_DATA_DIR)
-    arr = init_array(shelves)
+    arr = WNS.init_array(shelves)
     # for i in range(1, rows):
     #     for j in range(1, cols):
     #         if j > 9:
@@ -28,15 +26,15 @@ if __name__ == "__main__":
     #         arr[0][i] = str(i-1) + ' '
     #     else:
     #         arr[0][i] = str(i-1)
-    prep_data_for_computation(arr, shelves)
+    WNS.prep_data_for_computation(arr, shelves)
     val = '0'
     while val != '4':
-        val = display_start()
+        val = WNS.display_start()
         if val == '1':
-            print_warehouse(arr)
+            WNS.print_warehouse(arr)
             print()
         if val == '2':
-            show_item_location(arr, shelves)
+            WNS.show_item_location(arr, shelves)
         if val == '3':
             print("todo")
             print()
