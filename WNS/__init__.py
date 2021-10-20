@@ -1,9 +1,11 @@
 from .View.warehouse_view import (
     display_start,
     show_item_location,
-    show_path,
     init_array,
     print_warehouse
+)
+from .View.path_view import (
+    show_path,
 )
 from .Model.path_model import (
     prep_data_for_computation,

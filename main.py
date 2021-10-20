@@ -17,8 +17,8 @@ if __name__ == "__main__":
         if val == '3':
             items = WNS.get_item_list()
             path = WNS.find_item_list_path((0,0), items, shelves)
-            print("found path\n\n")
-            print(path)
+            WNS.print_warehouse(arr)
+            print(f"\nThe path to the item is \n{WNS.show_path(path)}")
         if val == '4':
             break
 
