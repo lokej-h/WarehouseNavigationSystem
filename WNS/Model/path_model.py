@@ -63,7 +63,7 @@ def go_until_end(horizontal, start_coord, end_coords, shelf_lookup, path):
 
 
 def find_item_list_path(
-    start_coord: tuple[int, int],
+    start_coord: Tuple[int, int],
     items: List[int],
     shelves: Dict[int, List[Tuple[int, int]]],
 ) -> List[Tuple[int, int]]:
