@@ -40,8 +40,8 @@ def muck_about(last_coord, shelf_lookup):
     dirs = [HORI, VERT]
     deltas = [1, -1]
     # randomly go in a valid direction
-    for l in [dirs, deltas]:
-        random.shuffle(l)
+    for each in [dirs, deltas]:
+        random.shuffle(each)
     print("\tmuck about")
     for direction, value in itertools.product(dirs, deltas):
         step = safe_make_step(
