@@ -3,29 +3,7 @@ import WNS
 if __name__ == "__main__":
     shelves = WNS.get_warehouse_shelves(WNS.config.WAREHOUSE_DATA_DIR)
     arr = WNS.init_array(shelves)
-    # for i in range(1, rows):
-    #     for j in range(1, cols):
-    #         if j > 9:
-    #             arr[i][j] = '.' + ' '
-    #         else:
-    #             arr[i][j] = '.' + ' '
 
-    # for i in range(1,len(arr)):
-    #     if i < 11:
-    #         arr[i][0] = str(i-1) + '  '
-    #     else:
-    #         arr[i][0] = str(i-1) + ' '
-
-    # for i in range(1,len(arr[0])):
-        
-    #     if i == 1:
-    #        arr[0][i] = '  ' + str(i-1) + ' '
-    #     # elif i < 11:
-    #     #     arr[0][i] = str(i-1) + ' '
-    #     elif i < 10:
-    #         arr[0][i] = str(i-1) + ' '
-    #     else:
-    #         arr[0][i] = str(i-1)
     WNS.prep_data_for_computation(arr, shelves)
     val = '0'
     while val != '4':
@@ -34,10 +12,11 @@ if __name__ == "__main__":
             WNS.print_warehouse(arr)
             print()
         if val == '2':
-            WNS.show_item_location(arr, shelves)
+            pid = WNS.get_one_item()
+            WNS.show_item_location(pid, arr, shelves)
         if val == '3':
-            print("todo")
-            print()
+            items = WNS.get_item_list()
+            WNS.find_item_list_path((0,0), items, shelves)
         if val == '4':
             break
 

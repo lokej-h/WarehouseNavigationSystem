@@ -36,8 +36,7 @@ def print_warehouse(arr) -> None:
     pass
     
 # you should move these into a new module
-def show_item_location(arr, shelves):
-    pid = input("Enter product ID of the product you are searching for: ")
+def show_item_location(pid, arr, shelves):
     try:
         print("The product with ID: ", pid, "is at the following location: (", shelves[pid][0] + 1, chr(shelves[pid][1] + 98), ')')
         arr[shelves[pid][0]+1][shelves[pid][1]+1] = 'O'
