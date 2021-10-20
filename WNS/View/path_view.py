@@ -10,7 +10,7 @@ def show_path(path: List[Tuple[int, int]]) -> List[Tuple[int, str]]:
     for x, y in path:
         step = (x + 1, view_helpers.int_to_cap_letter(y + 1))  # type: Tuple[int, str]
         pather.append(step)
-        path_str += f"{step} -> "
+        path_str += f"({step[0]}, " + step[1] + ") -> "
     path_str = path_str[:-4]
     print(path_str)
     return pather
