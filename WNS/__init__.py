@@ -1,3 +1,10 @@
+"""
+
+All imports in __init__.py are exposed to the outside module, 
+this helps keep the importing module’s namespace clean.
+
+"""
+
 from .View.warehouse_view import (
     display_start,
     show_item_location,

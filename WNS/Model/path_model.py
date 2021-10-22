@@ -18,11 +18,45 @@ class Warehouse:
     pass
 
 
-def find_item(item: int, shelves: Dict[int, List[int]]) -> Tuple[int, int]:
+def find_item(item: str, shelves: Dict[int, List[Tuple[int, int]]]) -> Tuple[int, int]:
+    """
+    Lookup the item's coordinates from the shelf lookup table.
+
+    Parameters
+    ----------
+    item : str
+        Item PID to lookup.
+    shelves : Dict[int, List[Tuple[int, int]]]
+        Shelf lookup table.
+
+    Returns
+    -------
+    Tuple[int, int]
+        The item's shelf coordinates.
+
+    """
     return (shelves[item][0], shelves[item][1] + 1)
 
 
-def make_step(direction, start_coord, i):
+def make_step(direction: int, start_coord: Tuple[int, int], i: int) -> Tuple[int, int]:
+    """
+    
+
+    Parameters
+    ----------
+    direction : int
+        DESCRIPTION.
+    start_coord : Tuple[int, int]
+        DESCRIPTION.
+    i : int
+        DESCRIPTION.
+
+    Returns
+    -------
+    Tuple[int, int]
+        DESCRIPTION.
+
+    """
     next_step = list(range(2))
     next_step[(direction + 1) % 2] = start_coord[(direction + 1) % 2]
     next_step[direction] = i
