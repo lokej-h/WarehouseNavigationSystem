@@ -15,6 +15,8 @@ If the warehouse file is not named like the file above, rename it to match “qv
 
 Double click `main.exe` to start the program.
 
+To run the raw code, use python 3.8 or above and run `python main.py`
+
 ## Building from source
 
 Install PyInstaller using the command - pip install pyinstaller
