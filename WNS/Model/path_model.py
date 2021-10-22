@@ -114,12 +114,13 @@ def muck_about(
     Raises
     ------
     Exception
-        DESCRIPTION.
+        If we ended up with shelves all around, something incredibly wrong
+        has happened. Raise an exception as we have completely failed.
 
     Returns
     -------
     step : Tuple[int, int]
-        DESCRIPTION.
+        Return a randomly chosen valid step from the given coordinates.
 
     """
     dirs = [HORI, VERT]
@@ -160,15 +161,15 @@ def go_until_end(
         Coordinate to end movement.
     shelf_lookup : Set[Tuple[int, int]]
         The shelf lookup table.
-    path : TYPE
-        DESCRIPTION.
+    path : List[Tuple[int, int]]
+        The path build so far.
 
     Returns
     -------
-    path : TYPE
-        DESCRIPTION.
-    TYPE
-        DESCRIPTION.
+    path : List[Tuple[int, int]]
+        The path built so far (with the steps found added on).
+    last_coord: Tuple[int, int]]
+        The last coordinate in the path.
 
     """
     # =============================================================================
@@ -206,6 +207,29 @@ def go_until_end(
 def find_item_list_path(
     start_coord: Tuple[int, int], items: List[int], shelves: Dict[str, List[int]],
 ) -> List[Tuple[int, int]]:
+    """
+    Find a path from the start coordinates to each item in the list.
+
+    Parameters
+    ----------
+    start_coord : Tuple[int, int]
+        The coordinates to start pathing.
+    items : List[int]
+        The list of items to navigate.
+    shelves : Dict[str, List[int]]
+        Shelf lookup table to avoid walking into shelves.
+
+    Raises
+    ------
+    Exception
+        Passes up exception from 'muck_about'.
+
+    Returns
+    -------
+    path: List[Tuple[int, int]]
+        Returns a path from the start coordinates to each item in the list.
+
+    """
     # ignore list, we are only grabbing the first item
     item = items[0]
 
@@ -261,7 +285,9 @@ def find_item_list_path(
 ##################################
 
 
-def prep_data_for_computation(arr: List[List[str]], shelves: Dict[str, Tuple[int, int]]) -> None:
+def prep_data_for_computation(
+    arr: List[List[str]], shelves: Dict[str, Tuple[int, int]]
+) -> None:
     # =============================================================================
     #     idk what data type you want to use to easily work with the warehouse
     #     so for now main is just passing Set[Shelf] whenever someone needs a Warehouse
