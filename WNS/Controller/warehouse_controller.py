@@ -15,7 +15,7 @@ class g:
     """The file path containing warehouse data"""
 
 
-def get_warehouse_shelves() -> Dict[str, List[Tuple[int, int]]]:
+def get_warehouse_shelves() -> Dict[str, Tuple[int, int]]:
     """
     Get and parse the warehouse data for reading.
     
@@ -52,8 +52,8 @@ def get_warehouse_shelves() -> Dict[str, List[Tuple[int, int]]]:
     #         shelves.add(Shelf(*line.split()))
     #     return shelves
     with open(g.warehouse_file_path) as file:
-        colnames = file.readline().split()
-        shelves = set()
+        # read out column names from buffer
+        file.readline().split()
 
         product_dict = dict()
 
@@ -65,14 +65,16 @@ def get_warehouse_shelves() -> Dict[str, List[Tuple[int, int]]]:
         return product_dict
 
 
-def get_warehouse_shelves_2d(file_path: Path):
-    with open(file_path) as file:
-        colnames = file.readline().split()
-        shelves = set()
-
-        product_dict = dict()
-
-        for line in file.readlines():
-            x = line.split()
-            product_dict[x[0]] = [x[0], x[1]]
-        return product_dict
+# =============================================================================
+# def get_warehouse_shelves_2d(file_path: Path):
+#     with open(file_path) as file:
+#         colnames = file.readline().split()
+#         shelves = set()
+#
+#         product_dict = dict()
+#
+#         for line in file.readlines():
+#             x = line.split()
+#             product_dict[x[0]] = [x[0], x[1]]
+#         return product_dict
+# =============================================================================
