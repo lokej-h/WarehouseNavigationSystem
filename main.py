@@ -1,7 +1,14 @@
+"""
+
+Main module to act as an entrypoint for pyinstaller
+
+This code can be moved into __main__.py without changing functionality
+
+"""
 import WNS
 
 if __name__ == "__main__":
-    shelves = WNS.get_warehouse_shelves(WNS.config.WAREHOUSE_DATA_DIR)
+    shelves = WNS.get_warehouse_shelves()
     arr = WNS.init_array(shelves)
 
     WNS.prep_data_for_computation(arr, shelves)
