@@ -23,4 +23,5 @@ def int_to_cap_letter(number: int) -> str:
         A character corresponding to the number.
 
     """
+    # TODO: handle numbers > 26 and < 1
     return chr(ord("@") + number)

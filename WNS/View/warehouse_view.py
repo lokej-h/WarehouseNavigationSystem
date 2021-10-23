@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
-from typing import Set
+from typing import Set, List
 from .menu import MenuDecision
-from . import view_helpers
+from .view_helpers import int_to_cap_letter
+
+
+class g:
+    """
+    Global variables are set to this module level class when WNS is imported
+    
+    Other globals for this module are stored here as well.
+    """
+
+    warehouse_array: List[List[str]]
 
 
 def display_start() -> str:
@@ -11,7 +21,15 @@ def display_start() -> str:
     return val
 
 
-def print_warehouse(arr) -> None:
+def warehouse_row_range():
+    return range(1, len(g.warehouse_array))
+
+
+def warehouse_col_range():
+    return range(1, len(g.warehouse_array[0]))
+
+
+def print_warehouse(highlight_positions=[]) -> None:
     # =============================================================================
     #     depending on whether you'd rather work with the warehouse data type
     #     Model team is working on, "warehouse" type may change
@@ -20,60 +38,85 @@ def print_warehouse(arr) -> None:
         "______________\n|Legend      |\n|X : Shelf   |\n|. : Empty   |\n|O : Product |\n--------------"
     )
     print("  ", end=" ")
-    for i in range(ord("A"), ord("W") + 1):
-        print(chr(i), end=" ")
+    for i in warehouse_col_range():
+        print(int_to_cap_letter(i), end=" ")
 
     print("")
 
-    for i in range(1, len(arr)):
+    for i in warehouse_row_range():
+        # print row number
         if i < 10:
             print(i, end="  ")
         else:
             print(i, end=" ")
-        for j in range(len(arr[i])):
-            print(arr[i][j], end=" ")
+        # print row
+        for j in warehouse_col_range():
+            if (i, j) in highlight_positions:
+                print("O", end=" ")
+            else:
+                print(g.warehouse_array[i][j], end=" ")
         print()
-
-    pass
 
 
 # you should move these into a new module
 
 
-def show_item_location(pid, arr, shelves):
+def show_item_location(pid, shelves):
     try:
         print(
             "The product with ID: ",
             pid,
             "is at the following location: (",
-            shelves[pid][0] + 1,
-            view_helpers.int_to_cap_letter(shelves[pid][1] + 2),
+            shelves[pid][0],
+            int_to_cap_letter(shelves[pid][1]),
             ")",
         )
-        arr[shelves[pid][0] + 1][shelves[pid][1] + 1] = "O"
         print(
             "The following is the map of the warehouse, with the product selected being denoted by an O"
         )
-        print_warehouse(arr)
-        arr[shelves[pid][0] + 1][shelves[pid][1] + 1] = "X"
+        print_warehouse(highlight_positions=[shelves[pid]])
         print()
     except (KeyError):
         print(str(pid) + " is not a product ID that exists in this warehouse.")
 
 
 def init_array(shelves):
-    find_max_x = []
-    find_max_y = []
-    for key in shelves:
-        find_max_x.append(shelves[key][0])
-        find_max_y.append(shelves[key][1])
-    rows, cols = (max(find_max_x) + 3, max(find_max_y) + 3)
-    arr = [["." for i in range(cols)] for j in range(rows)]
-    return arr
+    shelf_set = set(shelves.values())
 
+    # from the set of tuples, we want to find the max row and col
+    # to do this we will use the "zip" function to transpose the matrix
+    shelf_coords = list(shelf_set)
+    x, y = list(zip(*shelf_coords))
+    # this zip will repack the data from
+    # =============================================================================
+    #     [[1,2],
+    #      [3,4]]
+    #     to
+    #     [[1,3],
+    #      [2,4]]
+    # =============================================================================
+    # see https://book.pythontips.com/en/latest/zip.html
 
-def show_path(path):
-    pass
+    # add 2 (+1 for left/right top/bottom each) to the max
+    # for the extra space around the warehouse
+    cols = max(y) + 2
+    rows = max(x) + 2
+
+    # add to the array row by row
+    arr = list()
+    # for each row
+    for j in range(rows):
+        row = list()
+        # for each column in the row
+        for i in range(cols):
+            # check if the current coordinate is a shelf coordinate
+            # if it is, "X" else "."
+            if (j, i) in shelf_set:
+                row.append("X")
+            else:
+                row.append(".")
+        arr.append(row)
+    g.warehouse_array = arr
 
 
 ##################################

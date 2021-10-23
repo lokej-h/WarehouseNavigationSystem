@@ -9,22 +9,22 @@ import WNS
 
 if __name__ == "__main__":
     shelves = WNS.get_warehouse_shelves()
-    arr = WNS.init_array(shelves)
+    WNS.init_array(shelves)
 
-    WNS.prep_data_for_computation(arr, shelves)
+    # WNS.prep_data_for_computation(arr, shelves)
     val = "0"
     while val != "4":
         val = WNS.display_start()
         if val == "1":
-            WNS.print_warehouse(arr)
+            WNS.print_warehouse()
             print()
         if val == "2":
             pid = WNS.get_one_item()
-            WNS.show_item_location(pid, arr, shelves)
+            WNS.show_item_location(pid, shelves)
         if val == "3":
             items = WNS.get_item_list()
             path = WNS.find_item_list_path((0, 0), items, shelves)
-            WNS.show_item_location(items[0], arr, shelves)
+            WNS.show_item_location(items[0], shelves)
             print("\nThe path to the item is \n")
             WNS.show_path(path)
         if val == "4":

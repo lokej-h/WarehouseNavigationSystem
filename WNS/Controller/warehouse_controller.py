@@ -61,7 +61,11 @@ def get_warehouse_shelves() -> Dict[str, Tuple[int, int]]:
             l = line.split()
             x = int(float(l[1]))
             y = int(float(l[2]))
-            product_dict[l[0]] = (x, y)
+            # the coordinates start at 0,0
+            # this 0,0 transalates to 2,B or 2,2
+            # add 2 to each coordinate to add the space for the walkway
+            # around the border of the warehouse
+            product_dict[l[0]] = (x + 2, y + 2)
         return product_dict
 
 
