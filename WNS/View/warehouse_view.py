@@ -35,12 +35,17 @@ def print_warehouse(highlight_positions=[]) -> None:
     #     Model team is working on, "warehouse" type may change
     # =============================================================================
     print(
-        "______________\n|Legend      |\n|X : Shelf   |\n|. : Empty   |\n|O : Product |\n--------------"
+        """
+______________
+|Legend      |
+|X : Shelf   |
+|. : Empty   |
+|O : Product |
+--------------
+"""
     )
     print("  ", end=" ")
-    for i in warehouse_col_range():
-        # add 1 for user readability
-        print(int_to_cap_letter(i + 1), end=" ")
+    print_column_header()
 
     print("")
 
@@ -58,6 +63,11 @@ def print_warehouse(highlight_positions=[]) -> None:
             else:
                 print(g.warehouse_array[i][j], end=" ")
         print()
+
+def print_column_header():
+    for i in warehouse_col_range():
+        # add 1 for user readability
+        print(int_to_cap_letter(i + 1), end=" ")
 
 
 # you should move these into a new module
