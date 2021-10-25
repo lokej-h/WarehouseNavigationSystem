@@ -24,6 +24,8 @@ if __name__ == "__main__":
         if val == "3":
             items = WNS.get_item_list()
             path = WNS.find_item_list_path((0, 0), items, shelves)
+            start_pos = (0, 0)
+            path = WNS.find_item_list_path(start_pos, items, shelves)
             print("\nThe path to the item is \n")
             WNS.show_path(path)
             WNS.print_path(items[0], shelves, path)
