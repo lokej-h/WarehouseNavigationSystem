@@ -25,3 +25,21 @@ def int_to_cap_letter(number: int) -> str:
     """
     # TODO: handle numbers > 26 and < 1
     return chr(ord("@") + number)
+
+
+def coord_to_human(coord: tuple[int, int]) -> tuple[int, str]:
+    """
+    Converts calculation coordinates to more human-readable coordinates
+
+    Parameters
+    ----------
+    coord : tuple[int,int]
+        The coordinate to convert.
+
+    Returns
+    -------
+    tuple[int, str]
+        The converted coordinate.
+
+    """
+    return (coord[0] + 1, int_to_cap_letter(coord[1] + 1))

@@ -2,6 +2,7 @@ from typing import Dict, List, Tuple, Set, Optional
 import itertools
 import random
 import logging
+from ..View.view_helpers import coord_to_human
 
 # =============================================================================
 # You should probably put these in seperate files for your own sanity
@@ -184,14 +185,14 @@ def go_until_end(
     for i in range(start_coord[direction] + 1, end_coords[direction] + 1):
         # go 1 step horizontally, vertically
         next_step = make_step(direction, start_coord, i)
-        LOGGER.debug(f"going to {next_step}")
+        LOGGER.debug(f"going to {coord_to_human(next_step)}")
         # if we will try to go in a shelf
         if next_step in shelf_lookup:
             # abort
             LOGGER.debug("in shelf! abort!")
             return path, path[-1]
         # no shelf ahead, add to path
-        # LOGGER.debug(f"appending {next_step}")
+        # LOGGER.debug(f"appending {coord_to_human(next_step)}")
         path.append(next_step)
 
     # it's possible that we have already matched the x/y
@@ -235,11 +236,11 @@ def find_item_list_path(
 
     # make a shelf lookup table, remembering to increment the shelves by 1
     # for the outside border
-    shelf_lookup = set([(x[0] + 1, x[1] + 1) for x in shelves.values()])
+    shelf_lookup = set(shelves.values())
 
     # get where the item is
     end_coords = find_item(item, shelves)
-    LOGGER.debug(f"shelf access {end_coords[0]+1}, {chr(ord('@')+end_coords[1]+1)}")
+    LOGGER.debug(f"shelf access {coord_to_human(end_coords)}")
     # and check if a shelf is to the right
     if (end_coords[0] + 1, end_coords[1]) not in shelf_lookup:
         end_coords = (end_coords[0] + 1, end_coords[1])
@@ -253,9 +254,7 @@ def find_item_list_path(
         end_coords = (end_coords[0], end_coords[1] - 1)
     else:
         raise Exception("We can't access this shelf!")
-    LOGGER.debug(
-        f"can access shelf from {end_coords[0]+1}, {chr(ord('@')+end_coords[1]+1)}"
-    )
+    LOGGER.debug(f"can access shelf from {coord_to_human(end_coords)}")
 
     # make a basic path
 

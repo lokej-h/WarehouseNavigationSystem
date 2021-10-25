@@ -45,12 +45,6 @@ def get_warehouse_shelves() -> Dict[str, Tuple[int, int]]:
     This means that dict.values() will have duplicates.
 
     """
-    # with open(file_path) as file:
-    #     colnames = file.readline().split()
-    #     shelves = set()
-    #     for line in file.readlines():
-    #         shelves.add(Shelf(*line.split()))
-    #     return shelves
     with open(g.warehouse_file_path) as file:
         # read out column names from buffer
         file.readline().split()
@@ -63,22 +57,10 @@ def get_warehouse_shelves() -> Dict[str, Tuple[int, int]]:
             y = int(float(l[2]))
             # the coordinates start at 0,0
             # this 0,0 transalates to 2,B or 2,2
-            # add 2 to each coordinate to add the space for the walkway
+            # we will tackle in two steps
+            # +1 during load, we +1 for calculations (empty space in 0th row col)
+            # +1 for view coordinates for user
+            # add 1 to each coordinate to add the space for the walkway
             # around the border of the warehouse
-            product_dict[l[0]] = (x + 2, y + 2)
+            product_dict[l[0]] = (x + 1, y + 1)
         return product_dict
-
-
-# =============================================================================
-# def get_warehouse_shelves_2d(file_path: Path):
-#     with open(file_path) as file:
-#         colnames = file.readline().split()
-#         shelves = set()
-#
-#         product_dict = dict()
-#
-#         for line in file.readlines():
-#             x = line.split()
-#             product_dict[x[0]] = [x[0], x[1]]
-#         return product_dict
-# =============================================================================

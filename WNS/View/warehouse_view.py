@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import Set, List
 from .menu import MenuDecision
-from .view_helpers import int_to_cap_letter
+from .view_helpers import int_to_cap_letter, coord_to_human
 
 
 class g:
@@ -22,11 +22,11 @@ def display_start() -> str:
 
 
 def warehouse_row_range():
-    return range(1, len(g.warehouse_array))
+    return range(len(g.warehouse_array))
 
 
 def warehouse_col_range():
-    return range(1, len(g.warehouse_array[0]))
+    return range(len(g.warehouse_array[0]))
 
 
 def print_warehouse(highlight_positions=[]) -> None:
@@ -39,17 +39,19 @@ def print_warehouse(highlight_positions=[]) -> None:
     )
     print("  ", end=" ")
     for i in warehouse_col_range():
-        print(int_to_cap_letter(i), end=" ")
+        # add 1 for user readability
+        print(int_to_cap_letter(i + 1), end=" ")
 
     print("")
 
     for i in warehouse_row_range():
         # print row number
-        if i < 10:
-            print(i, end="  ")
+        rowNumber = i + 1
+        if rowNumber < 10:
+            print(rowNumber, end="  ")
         else:
-            print(i, end=" ")
-        # print row
+            print(rowNumber, end=" ")
+        # print row data
         for j in warehouse_col_range():
             if (i, j) in highlight_positions:
                 print("O", end=" ")
@@ -64,12 +66,8 @@ def print_warehouse(highlight_positions=[]) -> None:
 def show_item_location(pid, shelves):
     try:
         print(
-            "The product with ID: ",
-            pid,
-            "is at the following location: (",
-            shelves[pid][0],
-            int_to_cap_letter(shelves[pid][1]),
-            ")",
+            f"The product with ID: {pid}, is at the following location: "
+            + "({0}, {1})".format(*coord_to_human(shelves[pid]))
         )
         print(
             "The following is the map of the warehouse, with the product selected being denoted by an O"
