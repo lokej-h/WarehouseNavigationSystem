@@ -3,6 +3,7 @@ from .View.warehouse_view import (
     show_item_location,
     init_array,
     print_warehouse,
+    print_path
 )
 from .View.path_view import show_path
 from .Model.path_model import prep_data_for_computation, find_item, find_item_list_path

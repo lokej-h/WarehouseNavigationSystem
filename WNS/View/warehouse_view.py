@@ -72,7 +72,47 @@ def init_array(shelves):
     return arr
 
 
-def show_path(path):
+def direction(a,b):
+    if a[0] > b[0]: #going up
+        return '^'
+    elif a[0] < b[0]: #going down
+        return 'v'
+    elif a[1] > b[1]: #going right
+        return '<'
+    elif a[1] < b[1]: #going left
+        return '>'
+
+
+def print_path(pid,arr,shelves,path):
+
+
+    try:
+        for i in range(0,len(path)-1): #go through each coordinate, and look at next value until right before end
+            arr [path[i][0]+1][path[i][1]] = direction (path[i],path[i+1])
+
+        if len(path)>1:
+            arr [path[-1][0]+1][path[-1][1]] = direction (path[-2],path[-1])
+
+        print(
+            "The product with ID: ",
+            pid,
+            "is at the following location: (",
+            shelves[pid][0] + 1,
+            view_helpers.int_to_cap_letter(shelves[pid][1] + 2),
+            ")",
+        )
+        arr[shelves[pid][0] + 1][shelves[pid][1] + 1] = "O"
+        print(
+            "The following is the map of the warehouse, with the product selected being denoted by an O"
+        )
+        print_warehouse(arr)
+        arr[shelves[pid][0] + 1][shelves[pid][1] + 1] = "X"
+        for i in path:
+            arr[i[0]+1][i[1]]='.'
+        print()
+
+    except (KeyError):
+        print(str(pid) + " is not a product ID that exists in this warehouse.")
     pass
 
 
