@@ -145,8 +145,7 @@ def print_path(pid, shelves, path):
         for i in range(0, len(path)-1):
             g.warehouse_array[path[i][0]][path[i][1]] = direction(path[i], path[i+1])
 
-        if len(path) > 1:
-            g.warehouse_array[path[-1][0]][path[-1][1]] = direction(path[-2], path[-1])
+    
 
         print(
             f"The product with ID: {pid}, is at the following location: "
