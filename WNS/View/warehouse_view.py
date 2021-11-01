@@ -7,7 +7,7 @@ from .view_helpers import int_to_cap_letter, coord_to_human
 class g:
     """
     Global variables are set to this module level class when WNS is imported
-    
+
     Other globals for this module are stored here as well.
     """
 
@@ -115,6 +115,44 @@ def init_array(shelves):
                 row.append(".")
         arr.append(row)
     g.warehouse_array = arr
+
+
+def direction(a, b):
+    if a[0] > b[0]:  # going up
+        return '^'
+    elif a[0] < b[0]:  # going down
+        return 'v'
+    elif a[1] > b[1]:  # going right
+        return '<'
+    elif a[1] < b[1]:  # going left
+        return '>'
+
+
+def print_path(pid, shelves, path):
+
+    try:
+        # go through each coordinate, and look at next value until right before end
+        for i in range(0, len(path)-1):
+            g.warehouse_array[path[i][0]][path[i][1]] = direction(path[i], path[i+1])
+
+        if len(path) > 1:
+            g.warehouse_array[path[-1][0]][path[-1][1]] = direction(path[-2], path[-1])
+
+        print(
+            f"The product with ID: {pid}, is at the following location: "
+            + "({0}, {1})".format(*coord_to_human(shelves[pid]))
+        )
+        print(
+            "The following is the map of the warehouse, with the product selected being denoted by an O"
+        )
+        print_warehouse(highlight_positions=[shelves[pid]])
+        for i in path:
+            g.warehouse_array[i[0]+1][i[1]] = '.'
+        print()
+
+    except (KeyError):
+        print(str(pid) + " is not a product ID that exists in this warehouse.")
+    pass
 
 
 ##################################
