@@ -27,7 +27,7 @@ def int_to_cap_letter(number: int) -> str:
     return chr(ord("@") + number)
 
 
-def coord_to_human(coord: tuple[int, int]) -> tuple[int, str]:
+def coord_to_human(coord):
     """
     Converts calculation coordinates to more human-readable coordinates
 
