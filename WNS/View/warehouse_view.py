@@ -157,7 +157,7 @@ def print_path(pid, shelves, path):
         )
         print_warehouse(highlight_positions=[shelves[pid]])
         for i in path:
-            g.warehouse_array[i[0]+1][i[1]] = '.'
+            g.warehouse_array[i[0]][i[1]] = '.'
         print()
 
     except (KeyError):
