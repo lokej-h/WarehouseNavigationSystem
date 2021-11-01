@@ -72,4 +72,4 @@ def change_warehouse_shelves(file_path) -> None:
     Change warehouse data path
     
     """
-    g.warehouse_file_path = file_path
+    g.warehouse_file_path = Path(file_path.strip('\"\''))
