@@ -8,8 +8,7 @@ This code can be moved into __main__.py without changing functionality
 import WNS
 
 if __name__ == "__main__":
-    shelves = WNS.get_warehouse_shelves()
-    WNS.init_array(shelves)
+    shelves = WNS.init_WNS()
 
     # WNS.prep_data_for_computation(arr, shelves)
     val = "0"
@@ -31,8 +30,8 @@ if __name__ == "__main__":
             WNS.print_path(items[0], shelves, path)
         if val == "4":
             file_path = input("Please input the exact path for the file you want to load as your warehouse\n")
-            shelves_modified = WNS.change_warehouse_shelves(file_path)
-            WNS.init_array(shelves_modified)
+            WNS.change_warehouse_shelves(file_path)
+            shelves = WNS.init_WNS()
         if val == "5":
             break
 
