@@ -22,6 +22,7 @@ from .View.menu import MenuDecision
 # module would be best, this just makes it run
 # =============================================================================
 from .Controller.warehouse_controller import get_warehouse_shelves
+from .Controller.warehouse_controller import change_warehouse_shelves
 from .Controller.item_controller import (
     get_one_item,
     get_item_list,

@@ -45,6 +45,7 @@ def get_warehouse_shelves() -> Dict[str, Tuple[int, int]]:
     This means that dict.values() will have duplicates.
 
     """
+    print(g.warehouse_file_path)
     with open(g.warehouse_file_path) as file:
         # read out column names from buffer
         file.readline().split()

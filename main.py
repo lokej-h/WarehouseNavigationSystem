@@ -30,8 +30,8 @@ if __name__ == "__main__":
             WNS.show_path(path)
             WNS.print_path(items[0], shelves, path)
         if val == "4":
-            file_path = input("Please input the exact path for the file you want to load as your warehouse")
-            shelves_modified = change_warehouse_shelves(file_path)
+            file_path = input("Please input the exact path for the file you want to load as your warehouse\n")
+            shelves_modified = WNS.change_warehouse_shelves(file_path)
             WNS.init_array(shelves_modified)
         if val == "5":
             break
