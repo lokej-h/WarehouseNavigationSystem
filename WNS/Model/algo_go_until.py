@@ -8,12 +8,13 @@ import itertools
 import random
 from typing import List, Tuple, Set
 import logging
-from .path_model import safe_make_step
+from .path_helpers import safe_make_step
 from ..View.view_helpers import coord_to_human
 
 LOGGER = logging.getLogger(__name__)
 HORI = 0
 VERT = 1
+
 
 def muck_about(
     last_coord: Tuple[int, int], shelf_lookup: Set[Tuple[int, int]]
@@ -120,6 +121,7 @@ def go_until_end(
         return path, start_coord
     LOGGER.debug(f"finished matching, path is {path},\n\tlast index is {path[-1]}")
     return path, path[-1]
+
 
 def make_go_until_path(start_coord, shelf_lookup, end_coords):
     path = list()
