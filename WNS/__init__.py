@@ -10,7 +10,7 @@ from .View.warehouse_view import (
     show_item_location,
     init_array,
     print_warehouse,
-    print_path
+    print_path,
 )
 from .View.path_view import show_path
 from .Model.path_model import prep_data_for_computation, find_item, find_item_list_path
@@ -27,3 +27,10 @@ from .Controller.item_controller import (
     get_one_item,
     get_item_list,
 )
+from typing import Dict, Tuple
+
+
+def init_WNS() -> Dict[str, Tuple[int, int]]:
+    shelves = get_warehouse_shelves()
+    init_array(shelves)
+    return shelves

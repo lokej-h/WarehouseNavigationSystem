@@ -64,6 +64,7 @@ ______________
                 print(g.warehouse_array[i][j], end=" ")
         print()
 
+
 def print_column_header():
     for i in warehouse_col_range():
         # add 1 for user readability
@@ -129,24 +130,23 @@ def init_array(shelves):
 
 def direction(a, b):
     if a[0] > b[0]:  # going up
-        return '^'
+        return "^"
     elif a[0] < b[0]:  # going down
-        return 'v'
+        return "v"
     elif a[1] > b[1]:  # going right
-        return '<'
+        return "<"
     elif a[1] < b[1]:  # going left
-        return '>'
+        return ">"
 
 
 def print_path(pid, shelves, path):
 
     try:
         # go through each coordinate, and look at next value until right before end
-        for i in range(0, len(path)-1):
-            g.warehouse_array[path[i][0]][path[i][1]] = direction(path[i], path[i+1])
+        for i in range(0, len(path) - 1):
+            g.warehouse_array[path[i][0]][path[i][1]] = direction(path[i], path[i + 1])
 
-        if len(path) > 1:
-            g.warehouse_array[path[-1][0]][path[-1][1]] = direction(path[-2], path[-1])
+    
 
         print(
             f"The product with ID: {pid}, is at the following location: "
@@ -157,7 +157,7 @@ def print_path(pid, shelves, path):
         )
         print_warehouse(highlight_positions=[shelves[pid]])
         for i in path:
-            g.warehouse_array[i[0]][i[1]] = '.'
+            g.warehouse_array[i[0]][i[1]] = "."
         print()
 
     except (KeyError):
