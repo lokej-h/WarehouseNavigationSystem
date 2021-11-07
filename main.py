@@ -44,9 +44,9 @@ if __name__ == "__main__":
     #     p3 = WNS.find_item_list_path_bfs((0, 0), items, shelves)
     #     print(p3)
 
-    # route3 = [-1, str(108335), str(391825), str(340367), str(286457), str(661741)]
+    route2 = [-1, str(108335), str(391825), str(340367), str(286457), str(661741)]
     # route = [-1, str(281610), str(342706), str(111873), str(198029), str(366109), str(287261), str(76283), str(254489), str(258540), str(286457)]
-    route2 = [-1, str(427230), str(372539), str(396879), str(391680), str(208660), str(105912), str(332555), str(227534), str(68048), str(188856), str(736830), str(736831), str(479020), str(103313), str(1)]
+    # route3 = [-1, str(427230), str(372539), str(396879), str(391680), str(208660), str(105912), str(332555), str(227534), str(68048), str(188856), str(736830), str(736831), str(479020), str(103313), str(1)]
     left = 0
     right = 1
     full_path = []
