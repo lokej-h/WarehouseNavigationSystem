@@ -198,8 +198,9 @@ def find_item_list_path_bfs(
     """
     # ignore list, we are only grabbing the first item
     item = str(items[0])
-    print(item)
-    print(shelves[item])
+    print("Navigating from: ", start_coord, shelves[items[0]])
+    # print(item)
+    # print(shelves[item])
 
     # print(g.warehouse_array[0][0])
 
@@ -323,7 +324,7 @@ def find_item_list_path_bfs(
             nodes_in_next_layer = 0
             move_count = move_count + 1
     if reached_end:
-        print(r[2])
+        # print(r[2])
         return move_count
 
     return -1
