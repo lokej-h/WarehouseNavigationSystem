@@ -11,6 +11,7 @@ from .View.warehouse_view import (
     init_array,
     print_warehouse,
     print_path,
+    find_item_list_path_bfs,
 )
 from .View.path_view import show_path
 from .Model.path_model import prep_data_for_computation, find_item, find_item_list_path
