@@ -324,8 +324,8 @@ def find_item_list_path_bfs(
             nodes_in_next_layer = 0
             move_count = move_count + 1
     if reached_end:
-        # print(r[2])
-        return move_count
+        print(r[2])
+        return r[2]
 
     return -1
 

@@ -49,6 +49,7 @@ if __name__ == "__main__":
     route2 = [-1, str(427230), str(372539), str(396879), str(391680), str(208660), str(105912), str(332555), str(227534), str(68048), str(188856), str(736830), str(736831), str(479020), str(103313), str(1)]
     left = 0
     right = 1
+    full_path = []
     while right < len(route2):
         items = [route2[right]]
         if route2[left] == -1:
@@ -57,9 +58,13 @@ if __name__ == "__main__":
             start = shelves[route2[left]]
 
         p4 = WNS.find_item_list_path_bfs(start, items, shelves)
+        WNS.print_path(str(route2[right]), shelves, p4)
+        full_path.extend(p4)
         # print(p4)
         right = right + 1
         left = left + 1
+
+
 
 
 
