@@ -171,7 +171,7 @@ def print_path(pid, shelves, path):
 
 
 def find_item_list_path_bfs(
-    start_coord: Tuple[int, int], items: List[int], shelves: Dict[str, List[int]],
+    start_coord: Tuple[int, int], pickup_item: int, shelves: Dict[str, List[int]],
 ) -> List[Tuple[int, int]]:
     """
     Find a path from the start coordinates to each item in the list.
@@ -197,8 +197,8 @@ def find_item_list_path_bfs(
 
     """
     # ignore list, we are only grabbing the first item
-    item = str(items[0])
-    print("Navigating from: ", start_coord, shelves[items[0]])
+    item = str(pickup_item)
+    print("Navigating from: ", start_coord, shelves[item])
     # print(item)
     # print(shelves[item])
 
@@ -238,7 +238,7 @@ def find_item_list_path_bfs(
     reached_end = False
 
     p = []
-    p.append((0,0))
+    p.append(start_coord)
     q = Queue()
     q.put((start_coord[0], start_coord[1], p))
 
@@ -325,7 +325,7 @@ def find_item_list_path_bfs(
             move_count = move_count + 1
     if reached_end:
         print(r[2])
-        return r[2]
+        return r[2], move_count
 
     return -1
 
