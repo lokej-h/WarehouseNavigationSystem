@@ -146,9 +146,8 @@ def print_path(pid, shelves, path):
     try:
         # go through each coordinate, and look at next value until right before end
         for i in range(0, len(path) - 1):
-            g.warehouse_array[path[i][0]][path[i][1]] = direction(path[i], path[i + 1])
-
-    
+            g.warehouse_array[path[i][0]][path[i][1]
+                                          ] = direction(path[i], path[i + 1])
 
         print(
             f"The product with ID: {pid}, is at the following location: "
@@ -170,10 +169,10 @@ def print_path(pid, shelves, path):
 ##################################
 
 
-
 def find_item_list_path_bfs(
-    start_coord: Tuple[int, int], pickup_item: int, shelves: Dict[str, List[int]],
-) -> List[Tuple[int, int]]:
+    start_coord: Tuple[int, int], pickup_item: Tuple[int, int], 
+    shelves: Dict[str, List[int]],
+) -> Tuple[List[Tuple[int, int]], int]:
     """
     Find a path from the start coordinates to each item in the list.
 
@@ -181,7 +180,7 @@ def find_item_list_path_bfs(
     ----------
     start_coord : Tuple[int, int]
         The coordinates to start pathing.
-    pickup_item: int
+    pickup_item: Tuple[int, int]
         item id to pickup
     shelves : Dict[str, List[int]]
         Shelf lookup table to avoid walking into shelves.
@@ -192,8 +191,6 @@ def find_item_list_path_bfs(
         Returns a path from the start coordinates to item passed in. Also returns number of steps taken to get to item. 
 
     """
-    item = str(pickup_item)
-    print("Navigating from: ", start_coord, shelves[item])
 
     visited = []
     for i in range(0, len(g.warehouse_array)):
@@ -201,7 +198,6 @@ def find_item_list_path_bfs(
         for j in range(0, len(g.warehouse_array[0])):
             new.append(False)
         visited.append(new)
-
 
     visited[start_coord[0]][start_coord[1]] = True
     nodes_left_in_layer = 1
@@ -219,11 +215,10 @@ def find_item_list_path_bfs(
     while q.qsize() > 0:
         r = q.get()
         # print("r: ", r, " c: ", c)
-        if(r[0] == shelves[item][0] and r[1] == shelves[item][1]):
-            print("reached")
+        if(r[0] == pickup_item[0] and r[1] == pickup_item[1]):
             reached_end = True
             break
-        #explore neighbors starts
+        # explore neighbors starts
         for i in range(0, 4):
             rr = r[0] + dr[i]
             cc = r[1] + dc[i]
@@ -235,20 +230,20 @@ def find_item_list_path_bfs(
 
             if visited[rr][cc] == True:
                 continue
-            if g.warehouse_array[rr][cc] == "X" and (rr != shelves[item][0] or cc != shelves[item][1]):
+            if g.warehouse_array[rr][cc] == "X" and (rr != pickup_item[0] or cc != pickup_item[1]):
                 continue
 
             nl = []
             for i in range(len(r[2])):
                 nl.append(r[2][i])
-            nl.append((rr,cc))
+            nl.append((rr, cc))
             q.put((rr, cc, nl))
             # print("apended: ", rr, " and ", cc)
             visited[rr][cc] = True
             nodes_in_next_layer = nodes_in_next_layer + 1
-        #explore neighbors ends
+        # explore neighbors ends
 
-        nodes_left_in_layer = nodes_left_in_layer - 1;
+        nodes_left_in_layer = nodes_left_in_layer - 1
         if nodes_left_in_layer == 0:
             nodes_left_in_layer = nodes_in_next_layer
             nodes_in_next_layer = 0
@@ -292,7 +287,6 @@ def find_item_list_path_dfs(
             new.append(False)
         visited.append(new)
 
-
     visited[start_coord[0]][start_coord[1]] = True
     nodes_left_in_layer = 1
     nodes_in_next_layer = 0
@@ -313,7 +307,7 @@ def find_item_list_path_dfs(
             print("reached")
             reached_end = True
             break
-        #explore neighbors starts
+        # explore neighbors starts
         for i in range(0, 4):
             rr = r[0] + dr[i]
             cc = r[1] + dc[i]
@@ -331,14 +325,14 @@ def find_item_list_path_dfs(
             nl = []
             for i in range(len(r[2])):
                 nl.append(r[2][i])
-            nl.append((rr,cc))
+            nl.append((rr, cc))
             q.put((rr, cc, nl))
             # print("apended: ", rr, " and ", cc)
             visited[rr][cc] = True
             nodes_in_next_layer = nodes_in_next_layer + 1
-        #explore neighbors ends
+        # explore neighbors ends
 
-        nodes_left_in_layer = nodes_left_in_layer - 1;
+        nodes_left_in_layer = nodes_left_in_layer - 1
         if nodes_left_in_layer == 0:
             nodes_left_in_layer = nodes_in_next_layer
             nodes_in_next_layer = 0
