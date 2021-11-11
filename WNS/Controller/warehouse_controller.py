@@ -51,6 +51,12 @@ def get_warehouse_shelves() -> Dict[str, Tuple[int, int]]:
     This means that dict.values() will have duplicates.
 
     """
+    # ensure we have a valid warehouse path in case the ENV VAR is bad
+    try:
+        check_warehouse_data_file(g.warehouse_file_path)
+    except InvalidWarehouseData:
+        change_warehouse_shelves()
+        
     with open(g.warehouse_file_path) as file:
         # read out column names from buffer
         file.readline().split()
@@ -114,7 +120,7 @@ def check_warehouse_data_file(file: Path) -> bool:
             line_number += 1
     return True
         
-        
+
 
 def change_warehouse_shelves() -> None:
     """
