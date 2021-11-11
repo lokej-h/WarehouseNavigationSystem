@@ -3,6 +3,7 @@ from typing import Set, List, Tuple, Dict
 from .menu import MenuDecision
 from .view_helpers import int_to_cap_letter, coord_to_human
 from queue import Queue
+from queue import LifoQueue
 
 
 class g:
@@ -254,6 +255,96 @@ def find_item_list_path_bfs(
             move_count = move_count + 1
     if reached_end:
         print(r[2])
-        return r[2], move_count
+        # return r[2], move_count
+        return r[2], len(r[2])
+
+    return -1
+
+
+def find_item_list_path_dfs(
+    start_coord: Tuple[int, int], pickup_item: int, shelves: Dict[str, List[int]],
+) -> List[Tuple[int, int]]:
+    """
+    Find a path from the start coordinates to each item in the list.
+
+    Parameters
+    ----------
+    start_coord : Tuple[int, int]
+        The coordinates to start pathing.
+    pickup_item: int
+        item id to pickup
+    shelves : Dict[str, List[int]]
+        Shelf lookup table to avoid walking into shelves.
+
+    Returns
+    -------
+    path: List[Tuple[int, int]], int
+        Returns a path from the start coordinates to item passed in. Also returns number of steps taken to get to item. 
+
+    """
+    item = str(pickup_item)
+    print("Navigating from: ", start_coord, shelves[item])
+
+    visited = []
+    for i in range(0, len(g.warehouse_array)):
+        new = []
+        for j in range(0, len(g.warehouse_array[0])):
+            new.append(False)
+        visited.append(new)
+
+
+    visited[start_coord[0]][start_coord[1]] = True
+    nodes_left_in_layer = 1
+    nodes_in_next_layer = 0
+    move_count = 0
+    dr = [-1, +1, 0, 0]
+    dc = [0, 0, +1, -1]
+    reached_end = False
+
+    p = []
+    p.append(start_coord)
+    q = LifoQueue()
+    q.put((start_coord[0], start_coord[1], p))
+
+    while q.qsize() > 0:
+        r = q.get()
+        # print("r: ", r, " c: ", c)
+        if(r[0] == shelves[item][0] and r[1] == shelves[item][1]):
+            print("reached")
+            reached_end = True
+            break
+        #explore neighbors starts
+        for i in range(0, 4):
+            rr = r[0] + dr[i]
+            cc = r[1] + dc[i]
+
+            if rr < 0 or cc < 0:
+                continue
+            if rr >= len(g.warehouse_array) or cc >= len(g.warehouse_array[0]):
+                continue
+
+            if visited[rr][cc] == True:
+                continue
+            if g.warehouse_array[rr][cc] == "X" and (rr != shelves[item][0] or cc != shelves[item][1]):
+                continue
+
+            nl = []
+            for i in range(len(r[2])):
+                nl.append(r[2][i])
+            nl.append((rr,cc))
+            q.put((rr, cc, nl))
+            # print("apended: ", rr, " and ", cc)
+            visited[rr][cc] = True
+            nodes_in_next_layer = nodes_in_next_layer + 1
+        #explore neighbors ends
+
+        nodes_left_in_layer = nodes_left_in_layer - 1;
+        if nodes_left_in_layer == 0:
+            nodes_left_in_layer = nodes_in_next_layer
+            nodes_in_next_layer = 0
+            move_count = move_count + 1
+    if reached_end:
+        print(r[2])
+        return r[2], len(r[2])
 
     return -1
