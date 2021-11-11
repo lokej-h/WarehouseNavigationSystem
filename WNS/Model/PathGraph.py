@@ -45,6 +45,10 @@ class PathGraph:
     def cost(self, u: Node, v: Node) -> int:
         edge = self._get_edge_swappable(u, v)
         return edge.cost
+    
+    @classmethod
+    def get_node(coord: Tuple[int, int]) -> Node:
+        return PathGraph.Node(coord)
 
     def add_node(self, coordinate: Tuple[int, int]) -> None:
         start = self.Node(coordinate)
@@ -65,3 +69,7 @@ class PathGraph:
         for curr_node, next_node in zip(path, [node for node in path[1:]]):
             inter_path = self._get_edge_swappable(curr_node, next_node).path
             full_path.extend(inter_path)
+            
+    def get_neighbors(self, u: Node) -> Set[Node]:
+        # difference a tuple as it is faster that diff'ing a set
+        return self.nodes.difference((u,))
