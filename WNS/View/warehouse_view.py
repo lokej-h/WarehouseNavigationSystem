@@ -180,36 +180,19 @@ def find_item_list_path_bfs(
     ----------
     start_coord : Tuple[int, int]
         The coordinates to start pathing.
-    items : List[int]
-        The list of items to navigate.
+    pickup_item: int
+        item id to pickup
     shelves : Dict[str, List[int]]
         Shelf lookup table to avoid walking into shelves.
 
-    Raises
-    ------
-    Exception
-        Passes up exception from 'muck_about'.
-
     Returns
     -------
-    path: List[Tuple[int, int]]
-        Returns a path from the start coordinates to each item in the list.
+    path: List[Tuple[int, int]], int
+        Returns a path from the start coordinates to item passed in. Also returns number of steps taken to get to item. 
 
     """
-    # ignore list, we are only grabbing the first item
     item = str(pickup_item)
     print("Navigating from: ", start_coord, shelves[item])
-    # print(item)
-    # print(shelves[item])
-
-    # print(g.warehouse_array[0][0])
-
-    # print("start coordinates")
-    # print(start_coord[0])
-    # print(start_coord[1])
-    # print("end coordinates")
-    # print(shelves[item][0])
-    # print(shelves[item][1])
 
     visited = []
     for i in range(0, len(g.warehouse_array)):
@@ -218,17 +201,7 @@ def find_item_list_path_bfs(
             new.append(False)
         visited.append(new)
 
-    # if len(visited) == len(g.warehouse_array):
-    #     print("height correct")
 
-    # if(len(visited[0]) == len(g.warehouse_array[0])):
-    #     print("width correct")
-
-
-    rq = []
-    cq = []
-    rq.append(start_coord[0])
-    cq.append(start_coord[1])
     visited[start_coord[0]][start_coord[1]] = True
     nodes_left_in_layer = 1
     nodes_in_next_layer = 0
@@ -242,49 +215,7 @@ def find_item_list_path_bfs(
     q = Queue()
     q.put((start_coord[0], start_coord[1], p))
 
-    # while len(rq) > 0:
-    #     r = rq.pop(0)
-    #     c = cq.pop(0)
-    #     print("r: ", r, " c: ", c)
-    #     if(r == shelves[item][0] and c == shelves[item][1]):
-    #         print("reached")
-    #         reached_end = True
-    #         break
-    #     #explore neighbors starts
-    #     for i in range(0, 4):
-    #         rr = r + dr[i]
-    #         cc = c + dc[i]
-
-    #         if rr < 0 or cc < 0:
-    #             continue
-    #         if rr >= len(g.warehouse_array) or cc >= len(g.warehouse_array[0]):
-    #             continue
-
-    #         if visited[rr][cc] == True:
-    #             continue
-    #         if g.warehouse_array[rr][cc] == 'X' and (rr != shelves[item][0] and cc != shelves[item][1]):
-    #             continue
-
-    #         rq.append(rr)
-    #         cq.append(cc)
-    #         print("apended: ", rr, " and ", cc)
-    #         visited[rr][cc] = True
-    #         nodes_in_next_layer = nodes_in_next_layer + 1
-    #     #explore neighbors ends
-
-    #     nodes_left_in_layer = nodes_left_in_layer - 1;
-    #     if nodes_left_in_layer == 0:
-    #         nodes_left_in_layer = nodes_in_next_layer
-    #         nodes_in_next_layer = 0
-    #         move_count = move_count + 1
-    #         print("incrementing move count")
-    # if reached_end:
-    #     return move_count
-
-    # return -1
-
-    #attempt 2
-    while len(rq) > 0:
+    while q.qsize() > 0:
         r = q.get()
         # print("r: ", r, " c: ", c)
         if(r[0] == shelves[item][0] and r[1] == shelves[item][1]):
@@ -306,8 +237,6 @@ def find_item_list_path_bfs(
             if g.warehouse_array[rr][cc] == "X" and (rr != shelves[item][0] or cc != shelves[item][1]):
                 continue
 
-            # rq.append(rr)
-            # cq.append(cc)
             nl = []
             for i in range(len(r[2])):
                 nl.append(r[2][i])
@@ -328,42 +257,3 @@ def find_item_list_path_bfs(
         return r[2], move_count
 
     return -1
-
-
-    #     // Destination found;
-    #     if (grid[p.row][p.col] == 'd')
-    #         return p.dist;
- 
-    #     // moving up
-    #     if (p.row - 1 >= 0 &&
-    #         visited[p.row - 1][p.col] == false) {
-    #         q.push(QItem(p.row - 1, p.col, p.dist + 1));
-    #         visited[p.row - 1][p.col] = true;
-    #     }
- 
-    #     // moving down
-    #     if (p.row + 1 < N &&
-    #         visited[p.row + 1][p.col] == false) {
-    #         q.push(QItem(p.row + 1, p.col, p.dist + 1));
-    #         visited[p.row + 1][p.col] = true;
-    #     }
- 
-    #     // moving left
-    #     if (p.col - 1 >= 0 &&
-    #         visited[p.row][p.col - 1] == false) {
-    #         q.push(QItem(p.row, p.col - 1, p.dist + 1));
-    #         visited[p.row][p.col - 1] = true;
-    #     }
- 
-    #      // moving right
-    #     if (p.col + 1 < M &&
-    #         visited[p.row][p.col + 1] == false) {
-    #         q.push(QItem(p.row, p.col + 1, p.dist + 1));
-    #         visited[p.row][p.col + 1] = true;
-    #     }
-    # }
-    # return -1;
-
-
-
-    return 0
