@@ -16,6 +16,7 @@ from .View.warehouse_view import (
 )
 from .View.path_view import show_path
 from .Model.path_model import prep_data_for_computation, find_item, find_item_list_path
+from .Model.path_helpers import set_shelf_lookup
 from ._config import config
 from .View.menu import MenuDecision
 
@@ -34,5 +35,6 @@ from typing import Dict, Tuple
 
 def init_WNS() -> Dict[str, Tuple[int, int]]:
     shelves = get_warehouse_shelves()
+    set_shelf_lookup(shelves)
     init_array(shelves)
     return shelves
