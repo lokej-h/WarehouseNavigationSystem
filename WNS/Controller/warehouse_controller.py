@@ -45,26 +45,30 @@ def get_warehouse_shelves() -> Dict[str, Tuple[int, int]]:
     This means that dict.values() will have duplicates.
 
     """
-    print(g.warehouse_file_path)
-    with open(g.warehouse_file_path) as file:
-        # read out column names from buffer
-        file.readline().split()
 
-        product_dict = dict()
+    try:
+        with open(g.warehouse_file_path) as file:
+            # read out column names from buffer
+            file.readline().split()
 
-        for line in file.readlines():
-            l = line.split()
-            x = int(float(l[1]))
-            y = int(float(l[2]))
-            # the coordinates start at 0,0
-            # this 0,0 transalates to 2,B or 2,2
-            # we will tackle in two steps
-            # +1 during load, we +1 for calculations (empty space in 0th row col)
-            # +1 for view coordinates for user
-            # add 1 to each coordinate to add the space for the walkway
-            # around the border of the warehouse
-            product_dict[l[0]] = (x + 1, y + 1)
-        return product_dict
+            product_dict = dict()
+
+            for line in file.readlines():
+                l = line.split()
+                x = int(float(l[1]))
+                y = int(float(l[2]))
+                # the coordinates start at 0,0
+                # this 0,0 transalates to 2,B or 2,2
+                # we will tackle in two steps
+                # +1 during load, we +1 for calculations (empty space in 0th row col)
+                # +1 for view coordinates for user
+                # add 1 to each coordinate to add the space for the walkway
+                # around the border of the warehouse
+                product_dict[l[0]] = (x + 1, y + 1)
+            print("File Loaded Successfully\n")
+            return product_dict
+    except FileNotFoundError:
+        print("The file", g.warehouse_file_path, "was not found.")
 
 
 def change_warehouse_shelves(file_path) -> None:
