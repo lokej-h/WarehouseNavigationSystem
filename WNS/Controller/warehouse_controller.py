@@ -75,7 +75,9 @@ def get_warehouse_shelves() -> Dict[str, Tuple[int, int]]:
             # add 1 to each coordinate to add the space for the walkway
             # around the border of the warehouse
             product_dict[l[0]] = (x + 1, y + 1)
+        print("File Loaded Successfully\n")
         return product_dict
+
 
 def check_warehouse_data_file(file: Path) -> bool:
     """

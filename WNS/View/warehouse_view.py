@@ -90,6 +90,9 @@ def show_item_location(pid, shelves):
 
 
 def init_array(shelves):
+    if shelves==None: #error in which file was not found when trying to update file, do not try to update the array
+        return
+
     shelf_set = set(shelves.values())
 
     # from the set of tuples, we want to find the max row and col
