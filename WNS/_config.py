@@ -21,7 +21,7 @@ class config:
         os.getenv(
             "WAREHOUSE_DATA_DIR",
             (HOME_PATH / "input" / "qvBox-warehouse-data-f20-v01_1041763401.txt"),
-        )
+        ).strip('\"\'')
     )
     """the full path to the warehouse data directory on start,
     if unspecified we default to ./input/qvBox-warehouse-data-f20-v01_1041763401.txt"""
