@@ -1,9 +1,7 @@
 from typing import Dict, List, Tuple
 import logging
-from .path_helpers import find_item
-from .algo_go_until import make_go_until_path
 from .path_graph import PathGraph
-from ..View.view_helpers import coord_to_human
+from .algo_NN import NN
 
 # =============================================================================
 # You should probably put these in seperate files for your own sanity
@@ -47,47 +45,7 @@ def find_item_list_path(
 
     # run algorithm
 
-    # NN
-    start_node = graph.get_node(start_coord)
-    node_path = list()
-    node_path.append(start_node)
-    curr_node = start_node
-    for _ in range(len(graph.nodes)-1):
-        nearest_neighbor = min(graph.get_neighbors(curr_node).difference(
-            node_path), key=lambda v: graph.cost(curr_node, v))
-        node_path.append(nearest_neighbor)
-
-    node_path.append(start_node)
-    return graph.get_warehouse_steps(node_path)
-    # ignore list, we are only grabbing the first item
-    item = items[0]
-
-    # make a shelf lookup table, remembering to increment the shelves by 1
-    # for the outside border
-    shelf_lookup = set(shelves.values())
-
-    # get where the item is
-    end_coords = find_item(item, shelves)
-    LOGGER.debug(f"shelf access {coord_to_human(end_coords)}")
-    # and check if a shelf is to the right
-    if (end_coords[0] + 1, end_coords[1]) not in shelf_lookup:
-        end_coords = (end_coords[0] + 1, end_coords[1])
-    # check if a shelf is above?
-    elif (end_coords[0], end_coords[1] + 1) not in shelf_lookup:
-        end_coords = (end_coords[0], end_coords[1] + 1)
-    # and also left and down
-    elif (end_coords[0] - 1, end_coords[1]) not in shelf_lookup:
-        end_coords = (end_coords[0] - 1, end_coords[1])
-    elif (end_coords[0], end_coords[1] - 1) not in shelf_lookup:
-        end_coords = (end_coords[0], end_coords[1] - 1)
-    else:
-        raise Exception("We can't access this shelf!")
-    LOGGER.debug(f"can access shelf from {coord_to_human(end_coords)}")
-
-    # make a basic path
-
-    path = make_go_until_path(start_coord, shelf_lookup, end_coords)
-    return path
+    return NN(start_coord, graph)
 
 
 def prep_data_for_computation(
