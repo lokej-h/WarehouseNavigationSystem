@@ -200,6 +200,69 @@ def dsp_path_brute_tsp(shelves, route_arr, end = []):
 
 #*******************************************************************************************************************************************
 
+
+def nearest_neighbor(shelves, route_arr, index):
+    pre_dict = preprocess_distances(route_arr, shelves)
+    visited = set()
+    unvisited = set()
+    for i in route_arr:
+        unvisited.add(i)
+
+    current = (0,0)
+    curr_item = -1
+
+    mindistance = sys.maxsize
+    shortest_item = 0
+
+    nn_path = []
+    nn_c = 0
+
+    same = False
+
+    while(len(unvisited) > 0):
+        same = False
+        mindistance = sys.maxsize
+        for x in unvisited:
+            if curr_item != -1:
+                if shelves[str(x)] == shelves[str(curr_item)]:
+                    same = True
+                    unvisited.remove(x)
+                    visited.add(x)
+                    curr_item = x
+                    e.append(curr_item)
+                    break
+            if pre_dict[curr_item, x] < mindistance:
+                mindistance = pre_dict[curr_item, x]
+                shortest_item = x
+
+        if same == False:
+            unvisited.remove(shortest_item)
+            visited.add(shortest_item)
+            curr_item = shortest_item
+            e.append(shortest_item)
+
+            p,c = WNS.find_item_list_path_bfs(current, shortest_item, shelves)
+            p.pop()
+            c = c-1
+            current = (p[len(p) -1][0], p[len(p) -1][1])
+            nn_c = nn_c + c
+            nn_path.extend(p[:])
+
+    shelves[str(-1)] = (0,0)
+    p,c = WNS.find_item_list_path_bfs(current, -1, shelves)
+    p.pop()
+    c = c-1
+    nn_c = nn_c + c
+    nn_path.extend(p[:])
+
+
+    return nn_path,nn_c
+
+
+
+
+
+
 if __name__ == "__main__":
     shelves = WNS.init_WNS()
 
@@ -238,8 +301,8 @@ if __name__ == "__main__":
     #testing bfs or dfs
     # route2 = [108335]
     # route2 = [108335, 391825, 340367, 286457, 661741]
-    route2 = [281610, 342706, 111873, 198029, 366109, 287261, 76283]
-    # route2 = [427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313]
+    # route2 = [281610, 342706, 111873, 198029, 366109, 287261, 76283]
+    route2 = [427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313]
   
 
     # route2.insert(0, -1)
@@ -275,16 +338,7 @@ if __name__ == "__main__":
 
 
 
-    #test bfs vs dfs closely
-    # path,count = WNS.find_item_list_path_dfs(shelves[str(108335)], 391825, shelves)
-    # print(path)
-    # WNS.print_path(str(391825), shelves, path)
-    # print(count)
-
-
-
-
-
+  
 
 
 
@@ -320,21 +374,33 @@ if __name__ == "__main__":
 
 
     #thorough path testing without preprocessing
-    print("The Permutations for all possible item pickup combos are printed below: ")
-    print("")
-    path_brute_tsp(shelves, route2)
-    print("")
-    print("The minimum path after Brute force TSP is: ")
-    print("")
-    print(m)
-    print("The full path of the min cost path is: ")
+    # print("The Permutations for all possible item pickup combos are printed below: ")
+    # print("")
+    # path_brute_tsp(shelves, route2)
+    # print("")
+    # print("The minimum path after Brute force TSP is: ")
+    # print("")
+    # print(m)
+    # print("The full path of the min cost path is: ")
+    # print(p)
+    # print(e)
+    # l = []
+    # for i in e:
+    #     l.append(shelves[str(i)])
+    # print(l)
+    # WNS.print_path(str(route2[0]), shelves, p)
+
+
+
+    #nearest neighbor testing
+    p,c = nearest_neighbor(shelves, route2, 0)
     print(p)
+    print("The total cost is: ")
+    print(c)
+
+    WNS.print_path(str(route2[0]), shelves, p)
     print(e)
     l = []
     for i in e:
         l.append(shelves[str(i)])
     print(l)
-    WNS.print_path(str(route2[0]), shelves, p)
-
-
-
