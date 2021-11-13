@@ -6,7 +6,9 @@ Controller in charge of retrieving and parsing the warehouse data file.
 
 from pathlib import Path
 from typing import Dict, List, Tuple
+import logging
 
+LOGGER = logging.getLogger(__name__)
 
 class g:
     """Global variables are set to this module level class when WNS is imported"""
@@ -45,7 +47,7 @@ def get_warehouse_shelves() -> Dict[str, Tuple[int, int]]:
     This means that dict.values() will have duplicates.
 
     """
-    print(g.warehouse_file_path)
+    LOGGER.debug(g.warehouse_file_path)
     with open(g.warehouse_file_path) as file:
         # read out column names from buffer
         file.readline().split()

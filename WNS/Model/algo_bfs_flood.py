@@ -7,8 +7,10 @@ Created on Thu Nov 11 03:27:50 2021
 
 from typing import Tuple, List
 from queue import Queue
-
+import logging
 from ..View.warehouse_view import g as view
+
+LOGGER = logging.getLogger(__name__)
 
 def find_item_list_path_bfs(
     start_coord: Tuple[int, int], pickup_item: Tuple[int, int], 
@@ -54,7 +56,7 @@ def find_item_list_path_bfs(
 
     while q.qsize() > 0:
         r = q.get()
-        # print("r: ", r, " c: ", c)
+        # LOGGER.debug("r: ", r, " c: ", c)
         if(r[0] == pickup_item[0] and r[1] == pickup_item[1]):
             reached_end = True
             break
@@ -78,7 +80,7 @@ def find_item_list_path_bfs(
                 nl.append(r[2][i])
             nl.append((rr, cc))
             q.put((rr, cc, nl))
-            # print("apended: ", rr, " and ", cc)
+            # LOGGER.debug("apended: ", rr, " and ", cc)
             visited[rr][cc] = True
             nodes_in_next_layer = nodes_in_next_layer + 1
         # explore neighbors ends
@@ -89,7 +91,7 @@ def find_item_list_path_bfs(
             nodes_in_next_layer = 0
             move_count = move_count + 1
     if reached_end:
-        print(r[2])
+        LOGGER.debug(r[2])
         # return r[2], move_count
         return r[2], len(r[2])
 
