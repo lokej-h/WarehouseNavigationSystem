@@ -193,7 +193,6 @@ def find_item_list_path_bfs(
 
     """
     item = str(pickup_item)
-    print("Navigating from: ", start_coord, shelves[item])
 
     visited = []
     for i in range(0, len(g.warehouse_array)):
@@ -218,12 +217,9 @@ def find_item_list_path_bfs(
 
     while q.qsize() > 0:
         r = q.get()
-        # print("r: ", r, " c: ", c)
         if(r[0] == shelves[item][0] and r[1] == shelves[item][1]):
-            print("reached")
             reached_end = True
             break
-        #explore neighbors starts
         for i in range(0, 4):
             rr = r[0] + dr[i]
             cc = r[1] + dc[i]
@@ -243,10 +239,8 @@ def find_item_list_path_bfs(
                 nl.append(r[2][i])
             nl.append((rr,cc))
             q.put((rr, cc, nl))
-            # print("apended: ", rr, " and ", cc)
             visited[rr][cc] = True
             nodes_in_next_layer = nodes_in_next_layer + 1
-        #explore neighbors ends
 
         nodes_left_in_layer = nodes_left_in_layer - 1;
         if nodes_left_in_layer == 0:
@@ -254,8 +248,6 @@ def find_item_list_path_bfs(
             nodes_in_next_layer = 0
             move_count = move_count + 1
     if reached_end:
-        print(r[2])
-        # return r[2], move_count
         return r[2], len(r[2])
 
     return -1
@@ -283,7 +275,6 @@ def find_item_list_path_dfs(
 
     """
     item = str(pickup_item)
-    print("Navigating from: ", start_coord, shelves[item])
 
     visited = []
     for i in range(0, len(g.warehouse_array)):
@@ -308,12 +299,9 @@ def find_item_list_path_dfs(
 
     while q.qsize() > 0:
         r = q.get()
-        # print("r: ", r, " c: ", c)
         if(r[0] == shelves[item][0] and r[1] == shelves[item][1]):
-            print("reached")
             reached_end = True
             break
-        #explore neighbors starts
         for i in range(0, 4):
             rr = r[0] + dr[i]
             cc = r[1] + dc[i]
@@ -333,10 +321,8 @@ def find_item_list_path_dfs(
                 nl.append(r[2][i])
             nl.append((rr,cc))
             q.put((rr, cc, nl))
-            # print("apended: ", rr, " and ", cc)
             visited[rr][cc] = True
             nodes_in_next_layer = nodes_in_next_layer + 1
-        #explore neighbors ends
 
         nodes_left_in_layer = nodes_left_in_layer - 1;
         if nodes_left_in_layer == 0:
@@ -344,7 +330,6 @@ def find_item_list_path_dfs(
             nodes_in_next_layer = 0
             move_count = move_count + 1
     if reached_end:
-        print(r[2])
         return r[2], len(r[2])
 
     return -1
