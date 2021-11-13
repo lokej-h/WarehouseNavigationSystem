@@ -6,7 +6,7 @@ Created on Fri Nov  5 19:30:24 2021
 """
 from typing import Tuple, Set, Dict, List
 from collections import defaultdict
-
+import copy
 from .algo_bfs_flood import find_item_list_path_bfs
 
 
@@ -24,6 +24,12 @@ class PathGraph:
         def __init__(self, path, cost):
             self.path = path
             self.cost = cost
+            
+        def __str__(self):
+            return repr(self)
+            
+        def __repr__(self):
+            return repr((self.cost, self.path))
 
     class Node:
         """
@@ -34,6 +40,12 @@ class PathGraph:
 
         def __init__(self, coordinate: Tuple[int, int]):
             self.position = coordinate
+            
+        def __repr__(self):
+            return repr(self.position)
+        
+        def __str__(self):
+            return repr(self)
             
         def __hash__(self):
             return hash(self.position)
@@ -56,7 +68,7 @@ class PathGraph:
         if self._edges.get(a) is not None and self._edges.get(a).get(b) is not None:
             return self._edges.get(a).get(b)
         # if it was from the opposite side, reverse path
-        edge = self._edges.get(b).get(a)
+        edge = copy.deepcopy(self._edges.get(b).get(a))
         edge.path.reverse()
         return edge
 

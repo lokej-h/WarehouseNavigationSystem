@@ -143,7 +143,7 @@ def direction(a, b):
 
 
 def print_path(pids, shelves, paths):
-    for pid, path in zip(pids, paths):
+    for pid, path in zip(pids + [pids[0]], paths):
         show_path(path)
         try:
             # go through each coordinate, and look at next value until right before end
