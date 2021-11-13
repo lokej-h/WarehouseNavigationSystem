@@ -31,4 +31,4 @@ def get_item_list() -> List[str]:
         The list of product IDs the user would like to select.
 
     """
-    return input("Enter item(s) to navigate to (only 1 item for alpha release): ").split()
+    return input("Enter item(s) to navigate to (separate items with a space): ").split()

@@ -91,7 +91,7 @@ class PathGraph:
                 self._edges[start][node] = self.Edge(path, cost)
         self.nodes.add(start)
 
-    def get_warehouse_steps(self, path: List[Node]) -> List[Tuple[int, int]]:
+    def get_warehouse_steps(self, path: List[Node]) -> List[List[Tuple[int, int]]]:
         # need to get the intermediate steps between two nodes
         pathiter = iter(path)
         curr_node = next(pathiter)
