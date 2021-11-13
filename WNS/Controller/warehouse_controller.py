@@ -55,8 +55,9 @@ def get_warehouse_shelves() -> Dict[str, Tuple[int, int]]:
     try:
         check_warehouse_data_file(g.warehouse_file_path)
     except InvalidWarehouseData:
+        print("Current warehouse data file is invalid.\n")
         change_warehouse_shelves()
-        
+
     with open(g.warehouse_file_path) as file:
         # read out column names from buffer
         file.readline().split()
