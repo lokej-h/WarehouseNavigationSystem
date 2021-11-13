@@ -22,10 +22,9 @@ if __name__ == "__main__":
         if val == "3":
             items = WNS.get_item_list()
             start_pos = (0, 0)
-            path = WNS.find_item_list_path(start_pos, items, shelves)
+            paths = WNS.find_item_list_path(start_pos, items, shelves)
             print("\nThe path to the item is \n")
-            WNS.show_path(path)
-            WNS.print_path(items[0], shelves, path)
+            WNS.print_path(items, shelves, paths)
         if val == "4":
             file_path = input(
                 "Please input the exact path for the file you want to load as your warehouse\n")

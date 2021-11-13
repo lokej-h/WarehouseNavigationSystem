@@ -44,10 +44,21 @@ def find_item_list_path(
     # add all other item's shelf coordinate as a node
     for item in items:
         graph.add_node(shelves[item])
-        
-    return graph.get_warehouse_steps(
-        [PathGraph.get_node(start_coord), PathGraph.get_node(shelves[item])]
-         )
+
+    # run algorithm
+
+    # NN
+    start_node = graph.get_node(start_coord)
+    node_path = list()
+    node_path.append(start_node)
+    curr_node = start_node
+    for _ in range(len(graph.nodes)-1):
+        nearest_neighbor = min(graph.get_neighbors(curr_node).difference(
+            node_path), key=lambda v: graph.cost(curr_node, v))
+        node_path.append(nearest_neighbor)
+
+    node_path.append(start_node)
+    return graph.get_warehouse_steps(node_path)
     # ignore list, we are only grabbing the first item
     item = items[0]
 
@@ -77,7 +88,6 @@ def find_item_list_path(
 
     path = make_go_until_path(start_coord, shelf_lookup, end_coords)
     return path
-
 
 
 def prep_data_for_computation(

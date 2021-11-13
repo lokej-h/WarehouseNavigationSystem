@@ -87,7 +87,7 @@ class PathGraph:
         full_path = list()
         for curr_node, next_node in zip(path, [node for node in path[1:]]):
             inter_path = self._get_edge_swappable(curr_node, next_node).path
-            full_path.extend(inter_path)
+            full_path.append(inter_path)
         return full_path
 
     def get_neighbors(self, u: Node) -> Set[Node]:

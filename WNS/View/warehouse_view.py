@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import Set, List, Tuple, Dict
 from .menu import MenuDecision
+from .path_view import show_path
 from .view_helpers import int_to_cap_letter, coord_to_human
 from queue import Queue
 from queue import LifoQueue
@@ -141,29 +142,32 @@ def direction(a, b):
         return ">"
 
 
-def print_path(pid, shelves, path):
-
-    try:
-        # go through each coordinate, and look at next value until right before end
-        for i in range(0, len(path) - 1):
-            g.warehouse_array[path[i][0]][path[i][1]
-                                          ] = direction(path[i], path[i + 1])
-
-        print(
-            f"The product with ID: {pid}, is at the following location: "
-            + "({0}, {1})".format(*coord_to_human(shelves[pid]))
-        )
-        print(
-            "The following is the map of the warehouse, with the product selected being denoted by an O"
-        )
-        print_warehouse(highlight_positions=[shelves[pid]])
-        for i in path:
-            g.warehouse_array[i[0]][i[1]] = "."
-        print()
-
-    except (KeyError):
-        print(str(pid) + " is not a product ID that exists in this warehouse.")
-    pass
+def print_path(pids, shelves, paths):
+    for pid, path in zip(pids, paths):
+        show_path(path)
+        try:
+            # go through each coordinate, and look at next value until right before end
+            for i in range(0, len(path) - 1):
+                g.warehouse_array[path[i][0]][path[i][1]
+                                              ] = direction(path[i], path[i + 1])
+    
+            print(
+                f"The product with ID: {pid}, is at the following location: "
+                + "({0}, {1})".format(*coord_to_human(shelves[pid]))
+            )
+            print(
+                "The following is the map of the warehouse, with the product selected being denoted by an O"
+            )
+            print_warehouse(highlight_positions=[shelves[pid]])
+            for i in path:
+                g.warehouse_array[i[0]][i[1]] = "."
+            print()
+    
+        except (KeyError):
+            print(str(pid) + " is not a product ID that exists in this warehouse.")
+        
+        input("Press enter for the next path")
+    
 
 
 ##################################
