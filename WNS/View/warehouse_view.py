@@ -2,7 +2,22 @@
 from typing import Set, List
 from .menu import MenuDecision
 from .view_helpers import int_to_cap_letter, coord_to_human
+import colorama
+from colorama import Fore, Back, Style
 
+colorama.init()
+
+"""
+Global definitions of colorized symbols/characters used to represent objects in the warehouse
+"""
+up=Fore.YELLOW+"^"+Style.RESET_ALL
+down=Fore.YELLOW+"v"+Style.RESET_ALL
+left=Fore.YELLOW+"<"+Style.RESET_ALL
+right=Fore.YELLOW+">"+Style.RESET_ALL
+
+empty=Fore.BLACK + Style.BRIGHT + "." + Style.RESET_ALL
+shelf=Fore.RED+"X"+Style.RESET_ALL
+product=Fore.BLUE+"0"+Style.RESET_ALL
 
 class g:
     """
@@ -12,6 +27,7 @@ class g:
     """
 
     warehouse_array: List[List[str]]
+
 
 
 def display_start() -> str:
@@ -59,7 +75,7 @@ ______________
         # print row data
         for j in warehouse_col_range():
             if (i, j) in highlight_positions:
-                print("O", end=" ")
+                print(product, end=" ")
             else:
                 print(g.warehouse_array[i][j], end=" ")
         print()
@@ -124,22 +140,22 @@ def init_array(shelves):
             # check if the current coordinate is a shelf coordinate
             # if it is, "X" else "."
             if (j, i) in shelf_set:
-                row.append("X")
+                row.append(shelf)
             else:
-                row.append(".")
+                row.append(empty)
         arr.append(row)
     g.warehouse_array = arr
 
 
 def direction(a, b):
     if a[0] > b[0]:  # going up
-        return "^"
+        return up
     elif a[0] < b[0]:  # going down
-        return "v"
+        return down
     elif a[1] > b[1]:  # going right
-        return "<"
+        return left
     elif a[1] < b[1]:  # going left
-        return ">"
+        return right
 
 
 def print_path(pid, shelves, path):
@@ -160,7 +176,7 @@ def print_path(pid, shelves, path):
         )
         print_warehouse(highlight_positions=[shelves[pid]])
         for i in path:
-            g.warehouse_array[i[0]][i[1]] = "."
+            g.warehouse_array[i[0]][i[1]] = empty
         print()
 
     except (KeyError):
