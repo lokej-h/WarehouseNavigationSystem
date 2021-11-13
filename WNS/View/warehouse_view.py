@@ -90,8 +90,6 @@ def show_item_location(pid, shelves):
 
 
 def init_array(shelves):
-    if shelves==None: #error in which file was not found when trying to update file, do not try to update the array
-        return
 
     shelf_set = set(shelves.values())
 
@@ -148,8 +146,6 @@ def print_path(pid, shelves, path):
         # go through each coordinate, and look at next value until right before end
         for i in range(0, len(path) - 1):
             g.warehouse_array[path[i][0]][path[i][1]] = direction(path[i], path[i + 1])
-
-    
 
         print(
             f"The product with ID: {pid}, is at the following location: "
