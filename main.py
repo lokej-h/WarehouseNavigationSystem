@@ -8,21 +8,30 @@ This code can be moved into __main__.py without changing functionality
 import WNS
 import sys
 import subprocess
-
+import multiprocessing
 from multiprocessing import Process
 import time
 
-b_m = sys.maxsize
+manager = multiprocessing.Manager()
+b_m = manager.list()
+b_p = manager.list()
+b_e = manager.list()
+m = manager.list()
+p = manager.list()
+e = manager.list()
+
+b_m = [sys.maxsize]
 b_p = []
 b_e = []
 
-m = sys.maxsize
+m = [sys.maxsize]
 p = []
 e = []
 
 pcount = True
 
 
+#this function creates a dictionary that contains the cost between every two items in the input route array using BFS
 def preprocess_distances(route_arr, shelves):
 
     pre_dict = dict()
@@ -40,6 +49,7 @@ def preprocess_distances(route_arr, shelves):
 
     return pre_dict
 
+#this function creates a dictionary that contains the cost,and path between every two items in the input route array using BFS
 def preprocess_with_paths_bfs(route_arr, shelves):
 
     path_pre_dict = dict()
@@ -59,7 +69,7 @@ def preprocess_with_paths_bfs(route_arr, shelves):
 
     return path_pre_dict
 
-
+#this function creates a dictionary that contains the cost between every two items in the input route array using DFS
 def dfs_preprocess_distances(route_arr, shelves):
 
     pre_dict = dict()
@@ -77,6 +87,7 @@ def dfs_preprocess_distances(route_arr, shelves):
 
     return pre_dict
 
+#this function uses the BFS Dict to calculate the cost of traversing through the passed in route
 def calculate_tsp_distance(end, pre_dict, shelves):
     mod_end = list(end)
     mod_end.insert(0, -1)
@@ -96,7 +107,8 @@ def calculate_tsp_distance(end, pre_dict, shelves):
 
 
 
-
+#this function calculates the permutation of every single route of a given list of items, it then calls the calculate_tsp_distance function
+#to compute the cost of each permutation to find the minimum cost permutation
 def brute_force_tsp(pre_dict, shelves, route_arr, end = []):
     global m
     if(len(route_arr) == 0):
@@ -111,7 +123,10 @@ def brute_force_tsp(pre_dict, shelves, route_arr, end = []):
 
 
 
-
+#These functions don't use the preprocess dictionaries, instead they call BFS directly to get the cost and path
+#The reason for this is because we want to navigate exactly from current location to next item. 
+#This information isn't available in the preprocess dictionary since it only contains costs of distances from one item to every
+#other item. 
 #adding path functions ******************************************************************************************************************
 def path_calculate_tsp_distance(end, shelves):
     mod_end = list(end)
@@ -150,15 +165,15 @@ def path_brute_tsp(shelves, route_arr, end = []):
     global e
     if(len(route_arr) == 0):
         dist, tp = path_calculate_tsp_distance(end, shelves)
-        if dist < m:
+        if dist < m[0]:
             if m != sys.maxsize:
-                b_m = m
+                b_m = m[:]
                 b_p = p[:]
                 b_e = e[:]
 
             #backup
             pcount = False
-            m = dist
+            m[0] = dist
             p = tp
             e = end
             pcount = True
@@ -170,8 +185,10 @@ def path_brute_tsp(shelves, route_arr, end = []):
 
 #*******************************************************************************************************************************************
 
+
+#These functions are exaclty like the above two functions, but they use DFS instead of BFS
 #adding path functions DFS ******************************************************************************************************************
-def dsp_path_calculate_tsp_distance(end, shelves):
+def dfp_path_calculate_tsp_distance(end, shelves):
     mod_end = list(end)
     mod_end.insert(0, -1)
     mod_end.append(-1)
@@ -203,24 +220,24 @@ def dsp_path_calculate_tsp_distance(end, shelves):
     return total_cost, total_path
 
 
-def dsp_path_brute_tsp(shelves, route_arr, end = []):
+def dfs_path_brute_tsp(shelves, route_arr, end = []):
     global m
     global p
     global e
     if(len(route_arr) == 0):
-        dist, tp = dsp_path_calculate_tsp_distance(end, shelves)
-        if dist < m:
-            m = dist
+        dist, tp = dfp_path_calculate_tsp_distance(end, shelves)
+        if dist < m[0]:
+            m[0] = dist
             p = tp
             e = end
         print(end)
     else:
         for i in range(len(route_arr)):
-            dsp_path_brute_tsp(shelves, route_arr[:i] + route_arr[i+1:], end + route_arr[i:i+1])
+            dfs_path_brute_tsp(shelves, route_arr[:i] + route_arr[i+1:], end + route_arr[i:i+1])
 
 #*******************************************************************************************************************************************
 
-
+#This function uses the greedy nearest neighbor algorithm to calculate the path and cost between multiple itmes.
 def nearest_neighbor(shelves, route_arr, index):
     pre_dict = preprocess_distances(route_arr, shelves)
     visited = set()
@@ -284,132 +301,115 @@ def nearest_neighbor(shelves, route_arr, index):
 
 
 if __name__ == "__main__":
-    shelves = WNS.init_WNS()
-
-#     val = "0"
-#     while val != "5":
-#         val = WNS.display_start()
-#         if val == "1":
-#             WNS.print_warehouse()
-#             print()
-#         if val == "2":
-#             pid = WNS.get_one_item()
-#             WNS.show_item_location(pid, shelves)
-#         if val == "3":
-#             items = WNS.get_item_list()
-#             path = WNS.find_item_list_path((0, 0), items, shelves)
-#             start_pos = (0, 0)
-#             path = WNS.find_item_list_path(start_pos, items, shelves)
-#             print("\nThe path to the item is \n")
-#             WNS.show_path(path)
-#             WNS.print_path(items[0], shelves, path)
-#         if val == "4":
-#             file_path = input("Please input the exact path for the file you want to load as your warehouse\n")
-#             WNS.change_warehouse_shelves(file_path)
-#             shelves = WNS.init_WNS()
-#         if val == "6":
-#             items = [3000002]
-#             path,count = WNS.find_item_list_path_dfs((0, 0), 3000002, shelves)
-#             print(path)
-#             WNS.print_path(str(items[0]), shelves, path)
-#         if val == "5":
-#             break
-
-
-
 
     #testing bfs or dfs
-    # route2 = [108335]
+    route2 = [108335]
     # route2 = [108335, 391825, 340367, 286457, 661741]
     # route2 = [281610, 342706, 111873, 198029, 366109, 287261, 76283]
-    route2 = [427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313]
-  
+    # route2 = [427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313]
+    l = []    
 
-    # route2.insert(0, -1)
-    # left = 0
-    # right = 1
-    # full_path = []
-    # mc = -1
-    # while right < len(route2):
-    #     items = route2[right]
-    #     if route2[left] == -1:
-    #         start = (0,0)
-    #     else:
-    #         start = shelves[str(route2[left])]
+    shelves = WNS.init_WNS()
 
-    #     print("START IS: ", start)
+    mode = "0"
+    print("Input 0 to go into time testing mode, and 1 to go into User menu mode")
+    mode = input()
 
-    #     p4,mc  = WNS.find_item_list_path_bfs(start, items, shelves)
-    #     # print("MOVE COUNT IS: ")
-    #     # print(mc)
-    #     # print(len(p4))
+    if mode == "1":
+        val = "0"
+        while val != "5":
+            val = WNS.display_start()
+            if val == "1":
+                WNS.print_warehouse()
+                print()
+            if val == "2":
+                pid = WNS.get_one_item()
+                WNS.show_item_location(pid, shelves)
+            if val == "3":
+                items = WNS.get_item_list()
+                path = WNS.find_item_list_path((0, 0), items, shelves)
+                start_pos = (0, 0)
+                path = WNS.find_item_list_path(start_pos, items, shelves)
+                print("\nThe path to the item is \n")
+                WNS.show_path(path)
+                WNS.print_path(items[0], shelves, path)
+            if val == "4":
+                file_path = input("Please input the exact path for the file you want to load as your warehouse\n")
+                WNS.change_warehouse_shelves(file_path)
+                shelves = WNS.init_WNS()
+            if val == "6":
+                items = [3000002]
+                path,count = WNS.find_item_list_path_dfs((0, 0), 3000002, shelves)
+                print(path)
+                WNS.print_path(str(items[0]), shelves, path)
+            if val == "5":
+                break
 
-    #     # WNS.print_path(str(route2[right]), shelves, p4)
-    #     full_path.extend(p4)
-    #     full_path.append("NEXT")
-    #     # print(p4)
-    #     right = right + 1
-    #     left = left + 1
-
-    # # WNS.print_path(str(route2[left]), shelves, full_path)
-    # print("FULL PATH")
-    # print(full_path)
-
-
-
-
-  
-
-
-
-    # testing brute force tsp
-
-    # print("Starting Preprocessing - Debug Prints Below")
-
-    # pre_dict = preprocess_distances(route2, shelves)
-
-    # # bfs_dict = preprocess_distances(route2, shelves)
-
-    # print("")
-    # print("The Preprocess Dictionary is: ")
-    # print("")
-    # print(pre_dict)
-
-    # # print("")
-    # # print("The BFS Dictionary is: ")
-    # # print("")
-    # # print(bfs_dict)
-
-
-    # print("")
-    # print("The Permutations for all possible item pickup combos are printed below: ")
-    # print("")
-    # brute_force_tsp(pre_dict, shelves, route2)
-
-    # print("")
-    # print("The minimum path after Brute force TSP is: ")
-    # print("")
-    # print(m)
+    elif mode == "0":
+        brute = "0"
+        print("Enter 1 to test brute force dfs, 2 to test brute force dfs, and 3 to test nearest neighbor")
+        brute = input()
+        if brute == "1":
+            print("dfs")
+            print("\nThe Permutations for all possible item pickup combos are printed below: \n")
+            dfs_path_brute_tsp(shelves, route2)
+            print("\nThe minimum path after Brute force TSP with DFS is:\n ")
+            print(m[0])
+            print("\nThe full path of the min cost path is: \n")
+            print(p)
+            print(e)
+           
+            for i in e:
+                l.append(shelves[str(i)])
+            print(l)
+            WNS.print_path(str(route2[0]), shelves, p)
 
 
+        elif brute == "2":
+            print("bfs")
+            print("\nThe Permutations for all possible item pickup combos are printed below: \n")
+            path_brute_tsp(shelves, route2)
+            print("\nThe minimum path after Brute force TSP with BFS is:\n ")
+            print(m[0])
+            print("\nThe full path of the min cost path is: \n")
+            print(p)
+            print(e)
+           
+            for i in e:
+                l.append(shelves[str(i)])
+            print(l)
+            WNS.print_path(str(route2[0]), shelves, p)
 
-    #thorough path testing without preprocessing
-    print("The Permutations for all possible item pickup combos are printed below: ")
-    print("")
-    # path_brute_tsp(shelves, route2)
-    # print("")
-    # print("The minimum path after Brute force TSP is: ")
-    # print("")
-    # print(m)
-    # print("The full path of the min cost path is: ")
-    # print(p)
-    # print(e)
-    # l = []
-    # for i in e:
-    #     l.append(shelves[str(i)])
-    # print(l)
-    # WNS.print_path(str(route2[0]), shelves, p)
 
+        elif brute == "3":
+            print("nn")
+            p,c = nearest_neighbor(shelves, route2, 0)
+            print(p)
+            print("The total cost is: ")
+            print(c)
+
+            WNS.print_path(str(route2[0]), shelves, p)
+            print(e)
+
+            for i in e:
+                l.append(shelves[str(i)])
+            print(l)
+
+        else:
+            print("invalid input")
+
+    else:
+        print("Invalid input exiting program")
+
+
+
+
+
+
+
+
+
+    #DEBUG/TODO fix timing
 
     #timeout test
     # p1 = Process(target=path_brute_tsp(shelves, route2), name='Process_inc_forever')
@@ -454,23 +454,41 @@ if __name__ == "__main__":
 
 
     #timeout attempt 2
-    action_process = Process(target=path_brute_tsp(shelves, route2))
-    
-    action_process.start()
-    action_process.join(timeout=5)
-
-    action_process.terminate()
-
-
-    #nearest neighbor testing
-    # p,c = nearest_neighbor(shelves, route2, 0)
-    # print(p)
-    # print("The total cost is: ")
-    # print(c)
-
-    # WNS.print_path(str(route2[0]), shelves, p)
-    # print(e)
     # l = []
-    # for i in e:
-    #     l.append(shelves[str(i)])
-    # print(l)
+    # action_process = Process(target=path_brute_tsp, args=(shelves, route2))
+
+    # action_process.start()
+    # action_process.join(timeout=5)
+    # action_process.terminate()
+    
+    # if action_process != None:
+    #     print("THE FUNCTION HAS TIMED OUT - THE FOLLOWING IS WHAT IT COMPUTED BEFORE THE TIEMOUT")
+    #     print("")
+    #     print("The minimum path after Brute force TSP is: ")
+    #     print("")
+    #     if pcount == False:
+    #         print("pcount is false")
+    #         print(b_m)
+    #     else:
+    #         print("pcount true")
+    #         print(m)
+    #     print("The full path of the min cost path is: ")
+    #     if pcount == False:
+    #         print("pcount false 2")
+    #         print(b_p)
+    #         print(b_e)
+    #         for i in b_e:
+    #             l.append(shelves[str(i)])
+    #     else:
+    #         print("pcount true 2")
+    #         print(p)
+    #         print(e)
+    #         for i in e:
+    #             l.append(shelves[str(i)])
+
+    #     print(l)
+    #     WNS.print_path(str(route2[0]), shelves, p)
+
+    
+
+
