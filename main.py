@@ -7,9 +7,38 @@ This code can be moved into __main__.py without changing functionality
 """
 import WNS
 import sys
+import errno
+import os
+import signal
+import functools
+
+
 m = sys.maxsize
 p = []
 e = []
+
+
+class TimeoutError(Exception):
+    pass
+
+def timeout(seconds=60, error_message=os.strerror(errno.ETIME)):
+    def decorator(func):
+        def _handle_timeout(signum, frame):
+            raise TimeoutError(error_message)
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            signal.signal(signal.SIGALRM, _handle_timeout)
+            signal.alarm(seconds)
+            try:
+                result = func(*args, **kwargs)
+            finally:
+                signal.alarm(0)
+            return result
+
+        return wrapper
+
+    return decorator
 
 def preprocess_distances(route_arr, shelves):
 
@@ -132,7 +161,7 @@ def path_calculate_tsp_distance(end, shelves):
 
     return total_cost, total_path
 
-
+@timeout(10, os.strerror(errno.ETIMEDOUT))
 def path_brute_tsp(shelves, route_arr, end = []):
     global m
     global p
@@ -374,33 +403,33 @@ if __name__ == "__main__":
 
 
     #thorough path testing without preprocessing
-    # print("The Permutations for all possible item pickup combos are printed below: ")
-    # print("")
-    # path_brute_tsp(shelves, route2)
-    # print("")
-    # print("The minimum path after Brute force TSP is: ")
-    # print("")
-    # print(m)
-    # print("The full path of the min cost path is: ")
-    # print(p)
-    # print(e)
-    # l = []
-    # for i in e:
-    #     l.append(shelves[str(i)])
-    # print(l)
-    # WNS.print_path(str(route2[0]), shelves, p)
-
-
-
-    #nearest neighbor testing
-    p,c = nearest_neighbor(shelves, route2, 0)
+    print("The Permutations for all possible item pickup combos are printed below: ")
+    print("")
+    path_brute_tsp(shelves, route2)
+    print("")
+    print("The minimum path after Brute force TSP is: ")
+    print("")
+    print(m)
+    print("The full path of the min cost path is: ")
     print(p)
-    print("The total cost is: ")
-    print(c)
-
-    WNS.print_path(str(route2[0]), shelves, p)
     print(e)
     l = []
     for i in e:
         l.append(shelves[str(i)])
     print(l)
+    WNS.print_path(str(route2[0]), shelves, p)
+
+
+
+    #nearest neighbor testing
+    # p,c = nearest_neighbor(shelves, route2, 0)
+    # print(p)
+    # print("The total cost is: ")
+    # print(c)
+
+    # WNS.print_path(str(route2[0]), shelves, p)
+    # print(e)
+    # l = []
+    # for i in e:
+    #     l.append(shelves[str(i)])
+    # print(l)
