@@ -7,38 +7,21 @@ This code can be moved into __main__.py without changing functionality
 """
 import WNS
 import sys
-import errno
-import os
-import signal
-import functools
+import subprocess
 
+from multiprocessing import Process
+import time
+
+b_m = sys.maxsize
+b_p = []
+b_e = []
 
 m = sys.maxsize
 p = []
 e = []
 
+pcount = True
 
-class TimeoutError(Exception):
-    pass
-
-def timeout(seconds=60, error_message=os.strerror(errno.ETIME)):
-    def decorator(func):
-        def _handle_timeout(signum, frame):
-            raise TimeoutError(error_message)
-
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            signal.signal(signal.SIGALRM, _handle_timeout)
-            signal.alarm(seconds)
-            try:
-                result = func(*args, **kwargs)
-            finally:
-                signal.alarm(0)
-            return result
-
-        return wrapper
-
-    return decorator
 
 def preprocess_distances(route_arr, shelves):
 
@@ -161,7 +144,6 @@ def path_calculate_tsp_distance(end, shelves):
 
     return total_cost, total_path
 
-@timeout(10, os.strerror(errno.ETIMEDOUT))
 def path_brute_tsp(shelves, route_arr, end = []):
     global m
     global p
@@ -169,12 +151,21 @@ def path_brute_tsp(shelves, route_arr, end = []):
     if(len(route_arr) == 0):
         dist, tp = path_calculate_tsp_distance(end, shelves)
         if dist < m:
+            if m != sys.maxsize:
+                b_m = m
+                b_p = p[:]
+                b_e = e[:]
+
+            #backup
+            pcount = False
             m = dist
             p = tp
             e = end
+            pcount = True
         print(end)
     else:
         for i in range(len(route_arr)):
+            # time.sleep(1)
             path_brute_tsp(shelves, route_arr[:i] + route_arr[i+1:], end + route_arr[i:i+1])
 
 #*******************************************************************************************************************************************
@@ -405,20 +396,70 @@ if __name__ == "__main__":
     #thorough path testing without preprocessing
     print("The Permutations for all possible item pickup combos are printed below: ")
     print("")
-    path_brute_tsp(shelves, route2)
-    print("")
-    print("The minimum path after Brute force TSP is: ")
-    print("")
-    print(m)
-    print("The full path of the min cost path is: ")
-    print(p)
-    print(e)
-    l = []
-    for i in e:
-        l.append(shelves[str(i)])
-    print(l)
-    WNS.print_path(str(route2[0]), shelves, p)
+    # path_brute_tsp(shelves, route2)
+    # print("")
+    # print("The minimum path after Brute force TSP is: ")
+    # print("")
+    # print(m)
+    # print("The full path of the min cost path is: ")
+    # print(p)
+    # print(e)
+    # l = []
+    # for i in e:
+    #     l.append(shelves[str(i)])
+    # print(l)
+    # WNS.print_path(str(route2[0]), shelves, p)
 
+
+    #timeout test
+    # p1 = Process(target=path_brute_tsp(shelves, route2), name='Process_inc_forever')
+    # p1.start()
+    # p1.join(timeout=3)
+    # p1.terminate()
+    # if p1.exitcode is None:
+    #    print(f'Oops, {p1} timeouts!')
+    # if p2.exitcode == 0:
+    #     print(f'{p2} is luck and finishes in 10 seconds!')
+
+
+    #timeout almost working
+    # l = []
+    # try:
+    #     r = subprocess.run(path_brute_tsp(shelves, route2), timeout=3)
+    # except:
+    #     print("THE FUNCTION HAS TIMED OUT - THE FOLLOWING IS WHAT IT COMPUTED BEFORE THE TIEMOUT")
+    #     print("")
+    #     print("The minimum path after Brute force TSP is: ")
+    #     print("")
+    #     if pcount == False:
+    #         print(b_m)
+    #     else:
+    #         print(m)
+    #     print("The full path of the min cost path is: ")
+    #     if pcount == False:
+    #         print(b_p)
+    #         print(b_e)
+    #         for i in b_e:
+    #             l.append(shelves[str(i)])
+    #     else:
+    #         print(p)
+    #         print(e)
+    #         for i in e:
+    #             l.append(shelves[str(i)])
+
+    #     print(l)
+    #     WNS.print_path(str(route2[0]), shelves, p)
+
+    
+
+
+    #timeout attempt 2
+    action_process = Process(target=path_brute_tsp(shelves, route2))
+    
+    action_process.start()
+    action_process.join(timeout=5)
+
+    action_process.terminate()
 
 
     #nearest neighbor testing
