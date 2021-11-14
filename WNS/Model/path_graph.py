@@ -62,7 +62,7 @@ class PathGraph:
     
     def __init__(self):
         self.nodes = set()
-        self._edges = dict() #defaultdict(defaultdict)
+        self._edges = dict()
 
     def _get_edge_swappable(self, a: Node, b: Node) -> Edge:
         if self._edges.get(a) is not None and self._edges.get(a).get(b) is not None:
