@@ -10,7 +10,6 @@ import WNS
 if __name__ == "__main__":
     shelves = WNS.init_WNS()
 
-    # WNS.prep_data_for_computation(arr, shelves)
     val = "0"
     while val != "5":
         val = WNS.display_start()
@@ -22,31 +21,14 @@ if __name__ == "__main__":
             WNS.show_item_location(pid, shelves)
         if val == "3":
             items = WNS.get_item_list()
-            path = WNS.find_item_list_path((0, 0), items, shelves)
             start_pos = (0, 0)
-            path = WNS.find_item_list_path(start_pos, items, shelves)
+            paths = WNS.find_item_list_path(start_pos, items, shelves)
             print("\nThe path to the item is \n")
-            WNS.show_path(path)
-            WNS.print_path(items[0], shelves, path)
+            WNS.print_path(items, shelves, paths)
         if val == "4":
-            file_path = input("Please input the exact path for the file you want to load as your warehouse\n")
+            file_path = input(
+                "Please input the exact path for the file you want to load as your warehouse\n")
             WNS.change_warehouse_shelves(file_path)
             shelves = WNS.init_WNS()
         if val == "5":
             break
-
-    # WNS.prep_data_for_computation(shelves)
-
-    # decision = WNS.display_start()
-    # print("test")
-    # while decision != WNS.MenuDecision.QUIT:
-    #     if decision == WNS.MenuDecision.FIND_ITEM:
-    #         item = WNS.get_one_item()
-    #         shelf = WNS.find_item(item)
-    #         WNS.show_item_location()
-    #     elif decision == WNS.MenuDecision.FIND_ITEM_PATH:
-    #         items = WNS.get_item_list()
-    #         path = WNS.find_item_list_path(items)
-    #         WNS.show_path(path)
-    #     else:
-    #         raise Exception("This isn't possible, have you returned 'decision?'")

@@ -1,8 +1,7 @@
 from typing import Dict, List, Tuple
 import logging
-from .path_helpers import find_item
-from .algo_go_until import make_go_until_path
-from ..View.view_helpers import coord_to_human
+from .path_graph import PathGraph
+from .algo_NN import NN
 
 # =============================================================================
 # You should probably put these in seperate files for your own sanity
@@ -10,17 +9,8 @@ from ..View.view_helpers import coord_to_human
 LOGGER = logging.getLogger(__name__)
 
 
-class POIGraph:
-    pass
-
-
-class Warehouse:
-    pois = POIGraph()
-    pass
-
-
 def find_item_list_path(
-    start_coord: Tuple[int, int], items: List[int], shelves: Dict[str, List[int]],
+    start_coord: Tuple[int, int], items: List[int], shelves: Dict[str, Tuple[int, int]],
 ) -> List[Tuple[int, int]]:
     """
     Find a path from the start coordinates to each item in the list.
@@ -45,35 +35,17 @@ def find_item_list_path(
         Returns a path from the start coordinates to each item in the list.
 
     """
-    # ignore list, we are only grabbing the first item
-    item = items[0]
+    graph = PathGraph()
 
-    # make a shelf lookup table, remembering to increment the shelves by 1
-    # for the outside border
-    shelf_lookup = set(shelves.values())
+    # add start node
+    graph.add_node(start_coord)
+    # add all other item's shelf coordinate as a node
+    for item in items:
+        graph.add_node(shelves[item])
 
-    # get where the item is
-    end_coords = find_item(item, shelves)
-    LOGGER.debug(f"shelf access {coord_to_human(end_coords)}")
-    # and check if a shelf is to the right
-    if (end_coords[0] + 1, end_coords[1]) not in shelf_lookup:
-        end_coords = (end_coords[0] + 1, end_coords[1])
-    # check if a shelf is above?
-    elif (end_coords[0], end_coords[1] + 1) not in shelf_lookup:
-        end_coords = (end_coords[0], end_coords[1] + 1)
-    # and also left and down
-    elif (end_coords[0] - 1, end_coords[1]) not in shelf_lookup:
-        end_coords = (end_coords[0] - 1, end_coords[1])
-    elif (end_coords[0], end_coords[1] - 1) not in shelf_lookup:
-        end_coords = (end_coords[0], end_coords[1] - 1)
-    else:
-        raise Exception("We can't access this shelf!")
-    LOGGER.debug(f"can access shelf from {coord_to_human(end_coords)}")
+    # run algorithm
 
-    # make a basic path
-
-    path = make_go_until_path(start_coord, shelf_lookup, end_coords)
-    return path
+    return NN(start_coord, graph)
 
 
 def prep_data_for_computation(
@@ -82,9 +54,6 @@ def prep_data_for_computation(
     # =============================================================================
     #     idk what data type you want to use to easily work with the warehouse
     #     so for now main is just passing Set[Shelf] whenever someone needs a Warehouse
-    # =============================================================================
-    for key in shelves:
-        arr[shelves[key][0] + 1][shelves[key][1] + 1] = "X"
     # =============================================================================
     for key in shelves:
         arr[shelves[key][0] + 1][shelves[key][1] + 1] = "X"

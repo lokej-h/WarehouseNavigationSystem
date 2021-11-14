@@ -2,8 +2,30 @@
 Helpers for path creation
 """
 
-from typing import Dict, Tuple, Set, Optional
+from typing import Dict, Tuple, List, Set, Optional
 
+class g:
+    """
+    path globals
+    """
+    shelves: Dict[str, List[int]]
+    # shelf lookup table
+    
+def set_shelf_lookup(shelf_lookup: Dict[str, List[int]]):
+    """
+    Set global shelf lookup
+
+    Parameters
+    ----------
+    shelf_lookup : Dict[str, List[int]]
+        newly created shelf lookup table.
+
+    Returns
+    -------
+    None.
+
+    """
+    g.shelves = shelf_lookup
 
 def find_item(item: str, shelves: Dict[str, Tuple[int, int]]) -> Tuple[int, int]:
     """
