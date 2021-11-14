@@ -12,6 +12,7 @@ import multiprocessing
 from multiprocessing import Process
 import time
 
+
 manager = multiprocessing.Manager()
 b_m = manager.list()
 b_p = manager.list()
@@ -30,24 +31,83 @@ e = []
 
 pcount = True
 
+# def show_path(path):
+#     # need to increment x by 1 because user don't start from 0 meh meh meh
+#     pather = list()
+#     path_str = str()
+#     bundledpath = bundle(path)
+#     print(bundledpath)
+#     prevx = bundledpath[0][0]
+#     prevy = bundledpath[0][1]
+#     for x, y in bundledpath[1:]:
+#         if x > prevx:
+#             if x-prevx == 1:
+#                 print("Move one step down")
+#             else:
+#                 print("Move %d steps down" % (x-prevx))
+#         elif x < prevx:
+#             if prevx-x == 1:
+#                 print("Move one step up")
+#             else:
+#                 print("Move %d steps up" % (prevx-x))
+#         elif y > prevy:
+#             if prevy-y == 1:
+#                 print("Move one step right")
+#             else:
+#                 print("Move %d steps right" % (y-prevy))
+#         elif y < prevy:
+#             if prevy-y == 1:
+#                 print("Move one step left")
+#             else:
+#                 print("Move %d steps left" % (prevy-y))
+#         prevx = x
+#         prevy = y
+#         step = (x + 1, view_helpers.int_to_cap_letter(y + 1))  # type: Tuple[int, str]
+#         pather.append(step)
+#         path_str += f"({step[0]}, " + step[1] + ") -> "
+#     path_str = path_str[:-4]
+#     return pather
 
-#this function creates a dictionary that contains the cost between every two items in the input route array using BFS
-def preprocess_distances(route_arr, shelves):
+# def bundle(path):
+#     bundledpath = []
+#     bundledpath.append(path[0])
+#     direction = "x"
+#     prevx = path[0][0]
+#     prevy = path[0][1]
+#     if path[1][0] == prevx:
+#         direction = "y"
+#     else:
+#         direction = "x"
+#     print(direction)
+#     for x, y in path[1:]:
+#         if y == prevy and direction == "y":
+#             direction = "x"
+#             bundledpath.append((prevx,prevy))
+#         elif x == prevx and direction == "x":
+#             direction = "y"
+#             bundledpath.append((prevx,prevy))
+#         prevx = x
+#         prevy = y
+#     bundledpath.append(path[-1])
+#     return bundledpath
 
-    pre_dict = dict()
+# #this function creates a dictionary that contains the cost between every two items in the input route array using BFS
+# def preprocess_distances(route_arr, shelves):
 
-    for i in range(0, len(route_arr)):
-        for j in range(i+1, len(route_arr)):
-            path, cost = WNS.find_item_list_path_bfs(shelves[str(route_arr[i])], route_arr[j], shelves)
-            pre_dict[(route_arr[i], route_arr[j])] = cost
-            pre_dict[(route_arr[j], route_arr[i])] = cost
+#     pre_dict = dict()
 
-    for x in range(0, len(route_arr)):
-        path, cost = WNS.find_item_list_path_bfs((0,0), route_arr[x], shelves)
-        pre_dict[(-1, route_arr[x])] = cost
-        pre_dict[(route_arr[x], -1)] = cost
+#     for i in range(0, len(route_arr)):
+#         for j in range(i+1, len(route_arr)):
+#             path, cost = WNS.find_item_list_path_bfs(shelves[str(route_arr[i])], route_arr[j], shelves)
+#             pre_dict[(route_arr[i], route_arr[j])] = cost
+#             pre_dict[(route_arr[j], route_arr[i])] = cost
 
-    return pre_dict
+#     for x in range(0, len(route_arr)):
+#         path, cost = WNS.find_item_list_path_bfs((0,0), route_arr[x], shelves)
+#         pre_dict[(-1, route_arr[x])] = cost
+#         pre_dict[(route_arr[x], -1)] = cost
+
+#     return pre_dict
 
 #this function creates a dictionary that contains the cost,and path between every two items in the input route array using BFS
 def preprocess_with_paths_bfs(route_arr, shelves):
@@ -303,6 +363,7 @@ def nearest_neighbor(shelves, route_arr, index):
 if __name__ == "__main__":
 
     #testing bfs or dfs
+    # route2 = [1]
     route2 = [108335]
     # route2 = [108335, 391825, 340367, 286457, 661741]
     # route2 = [281610, 342706, 111873, 198029, 366109, 287261, 76283]
@@ -347,7 +408,7 @@ if __name__ == "__main__":
 
     elif mode == "0":
         brute = "0"
-        print("Enter 1 to test brute force dfs, 2 to test brute force dfs, and 3 to test nearest neighbor")
+        print("Enter 1 to test brute force dfs, 2 to test brute force bfs, and 3 to test nearest neighbor")
         brute = input()
         if brute == "1":
             print("dfs")
@@ -369,6 +430,7 @@ if __name__ == "__main__":
             print("bfs")
             print("\nThe Permutations for all possible item pickup combos are printed below: \n")
             path_brute_tsp(shelves, route2)
+            p.append((0,0))
             print("\nThe minimum path after Brute force TSP with BFS is:\n ")
             print(m[0])
             print("\nThe full path of the min cost path is: \n")
@@ -379,6 +441,8 @@ if __name__ == "__main__":
                 l.append(shelves[str(i)])
             print(l)
             WNS.print_path(str(route2[0]), shelves, p)
+
+            english = WNS.show_path(p)
 
 
         elif brute == "3":
