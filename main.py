@@ -31,83 +31,25 @@ e = []
 
 pcount = True
 
-# def show_path(path):
-#     # need to increment x by 1 because user don't start from 0 meh meh meh
-#     pather = list()
-#     path_str = str()
-#     bundledpath = bundle(path)
-#     print(bundledpath)
-#     prevx = bundledpath[0][0]
-#     prevy = bundledpath[0][1]
-#     for x, y in bundledpath[1:]:
-#         if x > prevx:
-#             if x-prevx == 1:
-#                 print("Move one step down")
-#             else:
-#                 print("Move %d steps down" % (x-prevx))
-#         elif x < prevx:
-#             if prevx-x == 1:
-#                 print("Move one step up")
-#             else:
-#                 print("Move %d steps up" % (prevx-x))
-#         elif y > prevy:
-#             if prevy-y == 1:
-#                 print("Move one step right")
-#             else:
-#                 print("Move %d steps right" % (y-prevy))
-#         elif y < prevy:
-#             if prevy-y == 1:
-#                 print("Move one step left")
-#             else:
-#                 print("Move %d steps left" % (prevy-y))
-#         prevx = x
-#         prevy = y
-#         step = (x + 1, view_helpers.int_to_cap_letter(y + 1))  # type: Tuple[int, str]
-#         pather.append(step)
-#         path_str += f"({step[0]}, " + step[1] + ") -> "
-#     path_str = path_str[:-4]
-#     return pather
+fl = [[]]
 
-# def bundle(path):
-#     bundledpath = []
-#     bundledpath.append(path[0])
-#     direction = "x"
-#     prevx = path[0][0]
-#     prevy = path[0][1]
-#     if path[1][0] == prevx:
-#         direction = "y"
-#     else:
-#         direction = "x"
-#     print(direction)
-#     for x, y in path[1:]:
-#         if y == prevy and direction == "y":
-#             direction = "x"
-#             bundledpath.append((prevx,prevy))
-#         elif x == prevx and direction == "x":
-#             direction = "y"
-#             bundledpath.append((prevx,prevy))
-#         prevx = x
-#         prevy = y
-#     bundledpath.append(path[-1])
-#     return bundledpath
+#this function creates a dictionary that contains the cost between every two items in the input route array using BFS
+def preprocess_distances(route_arr, shelves):
 
-# #this function creates a dictionary that contains the cost between every two items in the input route array using BFS
-# def preprocess_distances(route_arr, shelves):
+    pre_dict = dict()
 
-#     pre_dict = dict()
+    for i in range(0, len(route_arr)):
+        for j in range(i+1, len(route_arr)):
+            path, cost = WNS.find_item_list_path_bfs(shelves[str(route_arr[i])], route_arr[j], shelves)
+            pre_dict[(route_arr[i], route_arr[j])] = cost
+            pre_dict[(route_arr[j], route_arr[i])] = cost
 
-#     for i in range(0, len(route_arr)):
-#         for j in range(i+1, len(route_arr)):
-#             path, cost = WNS.find_item_list_path_bfs(shelves[str(route_arr[i])], route_arr[j], shelves)
-#             pre_dict[(route_arr[i], route_arr[j])] = cost
-#             pre_dict[(route_arr[j], route_arr[i])] = cost
+    for x in range(0, len(route_arr)):
+        path, cost = WNS.find_item_list_path_bfs((0,0), route_arr[x], shelves)
+        pre_dict[(-1, route_arr[x])] = cost
+        pre_dict[(route_arr[x], -1)] = cost
 
-#     for x in range(0, len(route_arr)):
-#         path, cost = WNS.find_item_list_path_bfs((0,0), route_arr[x], shelves)
-#         pre_dict[(-1, route_arr[x])] = cost
-#         pre_dict[(route_arr[x], -1)] = cost
-
-#     return pre_dict
+    return pre_dict
 
 #this function creates a dictionary that contains the cost,and path between every two items in the input route array using BFS
 def preprocess_with_paths_bfs(route_arr, shelves):
@@ -199,6 +141,7 @@ def path_calculate_tsp_distance(end, shelves):
 
     total_cost = 0
     total_path = []
+    f_path = [[]]
 
     while(right < len(mod_end)):
         if left == 0:
@@ -206,6 +149,9 @@ def path_calculate_tsp_distance(end, shelves):
             path.pop()
             cost = cost - 1
             total_path.extend(path[:])
+            # total_path.append(path[:])
+            if len(path) > 0:
+                f_path.append(path[:])
             total_cost = total_cost + cost
         else:
             if shelves[str(mod_end[right])] != shelves[str(mod_end[left])]:
@@ -213,18 +159,21 @@ def path_calculate_tsp_distance(end, shelves):
                 path.pop()
                 cost = cost - 1
                 total_path.extend(path[:])
+                # total_path.append(path[:])
+                f_path.append(path[:])
                 total_cost = total_cost + cost
         left = left + 1
         right = right + 1
 
-    return total_cost, total_path
+    return total_cost, total_path, f_path
 
 def path_brute_tsp(shelves, route_arr, end = []):
     global m
     global p
     global e
+    global fl
     if(len(route_arr) == 0):
-        dist, tp = path_calculate_tsp_distance(end, shelves)
+        dist, tp, f_path = path_calculate_tsp_distance(end, shelves)
         if dist < m[0]:
             if m != sys.maxsize:
                 b_m = m[:]
@@ -236,6 +185,7 @@ def path_brute_tsp(shelves, route_arr, end = []):
             m[0] = dist
             p = tp
             e = end
+            fl = f_path
             pcount = True
         print(end)
     else:
@@ -428,6 +378,7 @@ if __name__ == "__main__":
 
         elif brute == "2":
             print("bfs")
+            shelves[str(-1)] = (0,0)
             print("\nThe Permutations for all possible item pickup combos are printed below: \n")
             path_brute_tsp(shelves, route2)
             p.append((0,0))
@@ -436,11 +387,20 @@ if __name__ == "__main__":
             print("\nThe full path of the min cost path is: \n")
             print(p)
             print(e)
+            fl.pop(0)
+            fl[len(fl)-1].append((0,0))
+            print("fl is: ")
+            print(fl)
            
             for i in e:
                 l.append(shelves[str(i)])
             print(l)
-            WNS.print_path(str(route2[0]), shelves, p)
+
+            item_count = 0
+            for r in range(0,len(fl)-1):
+                WNS.print_path(str(route2[item_count]), shelves, fl[r])
+                item_count = item_count + 1
+            WNS.print_path(str(-1), shelves, fl[len(fl) - 1])
 
             english = WNS.show_path(p)
 
