@@ -383,7 +383,7 @@ class g:
 
 def display_start() -> str:
     val = input(
-        "Enter what you would like to do on the warehouse application.\nThe following are your options\n1. Print the Warehouse view to see the products in the warehouse.\n2. Enter a product ID to see where in the warehouse you can find the product.\n3. Enter a product ID to find navigation steps to that product.\n4. Select a new file to load as warehouse.\n5. Quit navigation and end program\n"
+        "Enter what you would like to do on the warehouse application.\nThe following are your options\n1. Print the Warehouse view to see the products in the warehouse.\n2. Enter a product ID to see where in the warehouse you can find the product.\n3. Enter a product ID to find navigation steps to that product.\n4. Select a new file to load as warehouse.\n5. Enter a list of Items to find a path to pickup every inputted item\n6. Quit navigation and end program\n"
     )
     return val
 
@@ -517,11 +517,16 @@ def print_path(pid, shelves, path):
             g.warehouse_array[path[i][0]][path[i][1]] = direction(path[i], path[i + 1])
 
     
-
-        print(
-            f"The product with ID: {pid}, is at the following location: "
-            + "({0}, {1})".format(*coord_to_human(shelves[pid]))
-        )
+        if pid == str(-1):
+            print(
+                f"The product with ID: START, is at the following location: "
+                + str(shelves[pid])
+            )
+        else:
+            print(
+                f"The product with ID: {pid}, is at the following location: "
+                + "({0}, {1})".format(*coord_to_human(shelves[pid]))
+            )
         print(
             "The following is the map of the warehouse, with the product selected being denoted by an O"
         )

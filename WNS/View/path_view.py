@@ -7,7 +7,7 @@ def show_path(path: List[Tuple[int, int]]) -> List[Tuple[int, str]]:
     pather = list()
     path_str = str()
     bundledpath = bundle(path)
-    print(bundledpath)
+    # print(bundledpath)
     prevx = bundledpath[0][0]
     prevy = bundledpath[0][1]
     for x, y in bundledpath[1:]:
@@ -49,7 +49,7 @@ def bundle(path):
         direction = "y"
     else:
         direction = "x"
-    print(direction)
+    # print(direction)
     for x, y in path[1:]:
         if y == prevy and direction == "y":
             direction = "x"
