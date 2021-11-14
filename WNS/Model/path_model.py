@@ -76,6 +76,7 @@ def find_item_list_path(
     return path
 
 
+
 def prep_data_for_computation(
     arr: List[List[str]], shelves: Dict[str, Tuple[int, int]]
 ) -> None:
