@@ -12,8 +12,8 @@ import sys
 import subprocess
 import multiprocessing
 from multiprocessing import Process
-# import time
-from timeit import default_timer as timer
+import time
+# from timeit import default_timer as timer
 
 
 
@@ -200,7 +200,8 @@ def path_brute_tsp(shelves, route_arr, end = []):
             pcount = True
         # end_time = time.time()
         # end_time = timeit.default_timer
-        end_time = timer()
+        # end_time = timer()
+        end_time = time.perf_counter()
         # print(end_time - start_time)
         if end_time - start_time > 60:
             raise Exception("Timeout!")
@@ -271,7 +272,8 @@ def dfs_path_brute_tsp(shelves, route_arr, end = []):
             fl = f_path
             pcount = True
         # end_time = time.time()
-        end_time = timer()
+        # end_time = timer()
+        end_time = time.perf_counter()
         # print(end_time - start_time)
         if end_time - start_time > 60:
             raise Exception("Timeout!")
@@ -304,7 +306,8 @@ def nearest_neighbor(shelves, route_arr, index):
 
     while(len(unvisited) > 0):
         # end_time = time.time()
-        end_time = timer()
+        # end_time = timer()
+        end_time = time.perf_counter()
         # print(end_time - start_time)
         if end_time - start_time > 60:
             print("nearest neighbor timed out")
@@ -472,7 +475,8 @@ if __name__ == "__main__":
                         done = False
                         try:
                             # start_time = time.time()
-                            start_time = timer()   
+                            # start_time = timer()
+                            start_time = time.perf_counter()   
                             path_brute_tsp(shelves, pickup_items)
                             print_steps(shelves, "BFS")
                             done = True
@@ -512,7 +516,8 @@ if __name__ == "__main__":
 
                         try:
                             # start_time = time.time()
-                            start_time = timer()
+                            # start_time = timer()
+                            start_time = time.perf_counter()
                             p,c,f_path = nearest_neighbor(shelves, pickup_items, 0)
                             p.append((0,0))
                             f_path[len(f_path)-1][0].append((0,0))
@@ -589,8 +594,11 @@ if __name__ == "__main__":
                 done = False
                 try:
                     # start_time = time.time()
-                    start_time = timer()
+                    # start_time = timer()
+                    start_time = time.perf_counter()
+                    print(time.perf_counter())
                     dfs_path_brute_tsp(shelves, route2)
+                    print(time.perf_counter())
                     print_steps(shelves, "DFS")
                     done = True
                 except:
@@ -632,7 +640,8 @@ if __name__ == "__main__":
                 try:
                     # start_time = time.time()
                     # start_time = timeit.default_timer
-                    start_time = timer()   
+                    # start_time = timer()
+                    start_time = time.perf_counter()   
                     path_brute_tsp(shelves, route2)
                     print_steps(shelves, "BFS")
                     done = True
@@ -674,7 +683,8 @@ if __name__ == "__main__":
                 shelves[str(-1)] = (0,0)
                 try:
                     # start_time = time.time()
-                    start_time = timer()
+                    # start_time = timer()
+                    start_time = time.perf_counter()
                     p,c,f_path = nearest_neighbor(shelves, route2, 0)
                     p.append((0,0))
                     f_path[len(f_path)-1][0].append((0,0))
