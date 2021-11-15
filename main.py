@@ -36,6 +36,9 @@ pcount = True
 
 fl = [[]]
 
+start_time = 0
+end_time = 0
+
 #this function creates a dictionary that contains the cost between every two items in the input route array using BFS
 def preprocess_distances(route_arr, shelves):
 
@@ -154,7 +157,7 @@ def path_calculate_tsp_distance(end, shelves):
             total_path.extend(path[:])
             # total_path.append(path[:])
             if len(path) > 0:
-                f_path.append(path[:])
+                f_path.append((path[:], str(mod_end[right])))
             total_cost = total_cost + cost
         else:
             if shelves[str(mod_end[right])] != shelves[str(mod_end[left])]:
@@ -163,7 +166,7 @@ def path_calculate_tsp_distance(end, shelves):
                 cost = cost - 1
                 total_path.extend(path[:])
                 # total_path.append(path[:])
-                f_path.append(path[:])
+                f_path.append((path[:], str(mod_end[right])))
                 total_cost = total_cost + cost
         left = left + 1
         right = right + 1
@@ -171,10 +174,13 @@ def path_calculate_tsp_distance(end, shelves):
     return total_cost, total_path, f_path
 
 def path_brute_tsp(shelves, route_arr, end = []):
+    # print("entered")
     global m
     global p
     global e
     global fl
+    global start_time
+    global end_time
     if(len(route_arr) == 0):
         dist, tp, f_path = path_calculate_tsp_distance(end, shelves)
         if dist < m[0]:
@@ -190,6 +196,10 @@ def path_brute_tsp(shelves, route_arr, end = []):
             e = end
             fl = f_path
             pcount = True
+        end_time = time.time()
+        # print(end_time - start_time)
+        if end_time - start_time > 60:
+            raise Exception("Timeout!")
         # print(end)
     else:
         for i in range(len(route_arr)):
@@ -220,7 +230,7 @@ def dfp_path_calculate_tsp_distance(end, shelves):
             cost = cost - 1
             total_path.extend(path[:])
             if len(path) > 0:
-                f_path.append(path[:])
+                f_path.append((path[:], str(mod_end[right])))
             total_cost = total_cost + cost
         else:
             if shelves[str(mod_end[right])] != shelves[str(mod_end[left])]:
@@ -228,7 +238,7 @@ def dfp_path_calculate_tsp_distance(end, shelves):
                 path.pop()
                 cost = cost - 1
                 total_path.extend(path[:])
-                f_path.append(path[:])
+                f_path.append((path[:], str(mod_end[right])))
                 total_cost = total_cost + cost
         left = left + 1
         right = right + 1
@@ -256,6 +266,10 @@ def dfs_path_brute_tsp(shelves, route_arr, end = []):
             e = end
             fl = f_path
             pcount = True
+        end_time = time.time()
+        # print(end_time - start_time)
+        if end_time - start_time > 60:
+            raise Exception("Timeout!")
         # print(end)
     else:
         for i in range(len(route_arr)):
@@ -284,6 +298,11 @@ def nearest_neighbor(shelves, route_arr, index):
     same = False
 
     while(len(unvisited) > 0):
+        end_time = time.time()
+        # print(end_time - start_time)
+        if end_time - start_time > 60:
+            print("nearest neighbor timed out")
+            raise Exception("Timeout!")
         same = False
         mindistance = sys.maxsize
         for x in unvisited:
@@ -311,7 +330,8 @@ def nearest_neighbor(shelves, route_arr, index):
             current = (p[len(p) -1][0], p[len(p) -1][1])
             nn_c = nn_c + c
             nn_path.extend(p[:])
-            f_path.append(p[:])
+            # f_path.append(p[:])
+            f_path.append((p[:], str(shortest_item)))
 
     shelves[str(-1)] = (0,0)
     p,c = WNS.find_item_list_path_bfs(current, -1, shelves)
@@ -319,11 +339,47 @@ def nearest_neighbor(shelves, route_arr, index):
     c = c-1
     nn_c = nn_c + c
     nn_path.extend(p[:])
-    f_path.append(p[:])
+    # f_path.append(p[:])
+    f_path.append((p[:], str(-1)))
 
 
     return nn_path,nn_c, f_path
 
+
+
+def print_steps(shelves, algo):
+    l = []
+    p.append((0,0))
+    print("\nThe minimum path after Brute force TSP with ", str(algo), " is: ")
+    print(m[0])
+    # print("\nThe full path of the min cost path is: \n")
+    # print(p)
+    print("The items were picked up in this order: ")
+    print(e)
+    fl.pop(0)
+    fl[len(fl)-1][0].append((0,0))
+    # print("fl is: ")
+    # print(fl)
+               
+    for i in e:
+        l.append(shelves[str(i)])
+    print("The location of the items that were picked up in order is: ")
+    print(l)
+
+    print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
+
+    item_count = 0
+    for r in range(0,len(fl)-1):
+        # print(fl[r][0])
+        # print(e[item_count])
+        # print(fl[r][1])
+        WNS.print_path(str(fl[r][1]), shelves, fl[r][0])
+        item_count = item_count + 1
+    WNS.print_path(str(-1), shelves, fl[len(fl) - 1][0])
+
+    print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
+    english = WNS.show_path(p)
+    print("")
 
 
 
@@ -334,10 +390,11 @@ if __name__ == "__main__":
     #testing bfs or dfs
     # route2 = [1]
     # route2 = [108335]
-    route2 = [108335, 391825, 340367, 286457, 661741]
+    # route2 = [108335, 391825, 340367, 286457, 661741]
     # route2 = [281610, 342706, 111873, 198029, 366109, 287261, 76283]
-    # route2 = [427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313]
-    l = []    
+    route2 = [427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313]
+    l = []
+     
 
     shelves = WNS.init_WNS()
     mode = "0"
@@ -408,56 +465,104 @@ if __name__ == "__main__":
                     if best == "1":
                         shelves[str(-1)] = (0,0)
                         # print("\nThe Permutations for all possible item pickup combos are printed below: \n")
-                        path_brute_tsp(shelves, pickup_items)
-                        p.append((0,0))
-                        print("The items were picked up in this order: ")
-                        print(e)
-                        fl.pop(0)
-                        fl[len(fl)-1].append((0,0))
+                        done = False
+                        try:
+                            start_time = time.time()   
+                            path_brute_tsp(shelves, pickup_items)
+                            print_steps(shelves, "BFS")
+                            done = True
+                        except:
+                            print("\nCODE HAS TIMED OUT - SHOWING BEST OF THE COMPUTED PATHS")
+                            if done == False:
+                                print_steps(shelves, "BFS")
+                            done = False
+                        # shelves[str(-1)] = (0,0)
+                        # # print("\nThe Permutations for all possible item pickup combos are printed below: \n")
+                        # path_brute_tsp(shelves, pickup_items)
+                        # p.append((0,0))
+                        # print("The items were picked up in this order: ")
+                        # print(e)
+                        # fl.pop(0)
+                        # fl[len(fl)-1].append((0,0))
                        
-                        for i in e:
-                            l.append(shelves[str(i)])
-                        print("The location of the items that were picked up in order is: ")
-                        print(l)
+                        # for i in e:
+                        #     l.append(shelves[str(i)])
+                        # print("The location of the items that were picked up in order is: ")
+                        # print(l)
 
-                        print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
+                        # print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
 
-                        item_count = 0
-                        for r in range(0,len(fl)-1):
-                            WNS.print_path(str(e[item_count]), shelves, fl[r])
-                            item_count = item_count + 1
-                        WNS.print_path(str(-1), shelves, fl[len(fl) - 1])
+                        # item_count = 0
+                        # for r in range(0,len(fl)-1):
+                        #     WNS.print_path(str(e[item_count]), shelves, fl[r])
+                        #     item_count = item_count + 1
+                        # WNS.print_path(str(-1), shelves, fl[len(fl) - 1])
 
-                        print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
-                        english = WNS.show_path(p)
-                        print("")
+                        # print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
+                        # english = WNS.show_path(p)
+                        # print("")
 
                     elif best == "2":
                         shelves[str(-1)] = (0,0)
-                        p,c,f_path = nearest_neighbor(shelves, pickup_items, 0)
-                        p.append((0,0))
-                        f_path[len(f_path)-1].append((0,0))
-                        f_path.pop(0)
 
-                        print("The items were picked up in this order: ")
-                        print(e)
-                        for i in e:
-                            l.append(shelves[str(i)])
-                        print("The location of the items that were picked up in order is: ")
-                        print(l)
+                        try:
+                            start_time = time.time()
+                            p,c,f_path = nearest_neighbor(shelves, pickup_items, 0)
+                            p.append((0,0))
+                            f_path[len(f_path)-1][0].append((0,0))
+                            f_path.pop(0)
+                            # print("fpath is: ")
+                            # print(f_path)
+                            # print(p)
+                            print("The total cost is: ")
+                            print(c)
+                            print("The items were picked up in this order: ")
+                            print(e)
+                            for i in e:
+                                l.append(shelves[str(i)])
+                            print("The location of the items that were picked up in order is: ")
+                            print(l)
 
-                        print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
+                            print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
 
-                        item_count = 0
-                        for r in range(0,len(f_path)-1):
-                            WNS.print_path(str(e[item_count]), shelves, f_path[r])
-                            item_count = item_count + 1
-                        WNS.print_path(str(-1), shelves, f_path[len(f_path) - 1])
+                            for r in range(0,len(f_path)-1):
+                                WNS.print_path(str(f_path[r][1]), shelves, f_path[r][0])
+                            WNS.print_path(str(-1), shelves, f_path[len(f_path) - 1][0])
 
 
-                        print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
-                        english = WNS.show_path(p)
-                        print("")
+                            print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
+                            english = WNS.show_path(p)
+                            print()
+                        except Exception as ex:
+                            print(ex)
+                            print("NEAREST NEIGHBOR TIMED OUT - NO PATH FOUND TRY AGAIN")
+
+
+                        # shelves[str(-1)] = (0,0)
+                        # p,c,f_path = nearest_neighbor(shelves, pickup_items, 0)
+                        # p.append((0,0))
+                        # f_path[len(f_path)-1].append((0,0))
+                        # f_path.pop(0)
+  
+                        # print("The items were picked up in this order: ")
+                        # print(e)
+                        # for i in e:
+                        #     l.append(shelves[str(i)])
+                        # print("The location of the items that were picked up in order is: ")
+                        # print(l)
+
+                        # print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
+
+                        # item_count = 0
+                        # for r in range(0,len(f_path)-1):
+                        #     WNS.print_path(str(e[item_count]), shelves, f_path[r])
+                        #     item_count = item_count + 1
+                        # WNS.print_path(str(-1), shelves, f_path[len(f_path) - 1])
+
+
+                        # print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
+                        # english = WNS.show_path(p)
+                        # print("")
 
                     else:
                         print("Invalid selection try again")
@@ -474,95 +579,120 @@ if __name__ == "__main__":
             if brute == "1":
                 # pr0int("dfs")
                 # print("\nThe Permutations for all possible item pickup combos are printed below: \n")
-                dfs_path_brute_tsp(shelves, route2)
-                print("\nThe minimum path after Brute force TSP with DFS is: ")
-                print(m[0])
-                # print("\nThe full path of the min cost path is: \n")
-                # print(p)
-                print("The items were picked up in this order: ")
-                print(e)
-                fl.pop(0)
-                fl[len(fl)-1].append((0,0))
-                for i in e:
-                    l.append(shelves[str(i)])
-                print("The location of the items that were picked up in order is: ")
-                print(l)
+                shelves[str(-1)] = (0,0)
+                done = False
+                try:
+                    start_time = time.time()
+                    dfs_path_brute_tsp(shelves, route2)
+                    print_steps(shelves, "DFS")
+                    done = True
+                except:
+                    print("\nCODE HAS TIMED OUT - SHOWING BEST OF THE COMPUTED PATHS")
+                    if done == False:
+                        print_steps(shelves, "DFS")
+                    done = False 
 
-                # WNS.print_path(str(route2[0]), shelves, p)
-                print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
+                # print("\nThe minimum path after Brute force TSP with DFS is: ")
+                # print(m[0])
+                # # print("\nThe full path of the min cost path is: \n")
+                # # print(p)
+                # print("The items were picked up in this order: ")
+                # print(e)
+                # fl.pop(0)
+                # fl[len(fl)-1].append((0,0))
+                # for i in e:
+                #     l.append(shelves[str(i)])
+                # print("The location of the items that were picked up in order is: ")
+                # print(l)
 
-                item_count = 0
-                for r in range(0,len(fl)-1):
-                    WNS.print_path(str(e[item_count]), shelves, fl[r])
-                    item_count = item_count + 1
-                WNS.print_path(str(-1), shelves, fl[len(fl) - 1])
+                # # WNS.print_path(str(route2[0]), shelves, p)
+                # print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
 
-                print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
-                english = WNS.show_path(p)
+                # item_count = 0
+                # for r in range(0,len(fl)-1):
+                #     WNS.print_path(str(e[item_count]), shelves, fl[r])
+                #     item_count = item_count + 1
+                # WNS.print_path(str(-1), shelves, fl[len(fl) - 1])
+
+                # print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
+                # english = WNS.show_path(p)
 
             elif brute == "2":
                 # print("bfs")
                 shelves[str(-1)] = (0,0)
                 # print("\nThe Permutations for all possible item pickup combos are printed below: \n")
-                path_brute_tsp(shelves, route2)
-                p.append((0,0))
-                print("\nThe minimum path after Brute force TSP with BFS is: ")
-                print(m[0])
-                # print("\nThe full path of the min cost path is: \n")
-                # print(p)
-                print("The items were picked up in this order: ")
-                print(e)
-                fl.pop(0)
-                fl[len(fl)-1].append((0,0))
-                # print("fl is: ")
-                # print(fl)
+                done = False
+                try:
+                    start_time = time.time()   
+                    path_brute_tsp(shelves, route2)
+                    print_steps(shelves, "BFS")
+                    done = True
+                except:
+                    print("\nCODE HAS TIMED OUT - SHOWING BEST OF THE COMPUTED PATHS")
+                    if done == False:
+                        print_steps(shelves, "BFS")
+                    done = False 
+                # p.append((0,0))
+                # print("\nThe minimum path after Brute force TSP with BFS is: ")
+                # print(m[0])
+                # # print("\nThe full path of the min cost path is: \n")
+                # # print(p)
+                # print("The items were picked up in this order: ")
+                # print(e)
+                # fl.pop(0)
+                # fl[len(fl)-1].append((0,0))
+                # # print("fl is: ")
+                # # print(fl)
                
-                for i in e:
-                    l.append(shelves[str(i)])
-                print("The location of the items that were picked up in order is: ")
-                print(l)
+                # for i in e:
+                #     l.append(shelves[str(i)])
+                # print("The location of the items that were picked up in order is: ")
+                # print(l)
 
-                print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
+                # print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
 
-                item_count = 0
-                for r in range(0,len(fl)-1):
-                    WNS.print_path(str(e[item_count]), shelves, fl[r])
-                    item_count = item_count + 1
-                WNS.print_path(str(-1), shelves, fl[len(fl) - 1])
+                # item_count = 0
+                # for r in range(0,len(fl)-1):
+                #     WNS.print_path(str(e[item_count]), shelves, fl[r])
+                #     item_count = item_count + 1
+                # WNS.print_path(str(-1), shelves, fl[len(fl) - 1])
 
-                print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
-                english = WNS.show_path(p)
+                # print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
+                # english = WNS.show_path(p)
 
 
             elif brute == "3":
                 shelves[str(-1)] = (0,0)
-                p,c,f_path = nearest_neighbor(shelves, route2, 0)
-                p.append((0,0))
-                f_path[len(f_path)-1].append((0,0))
-                f_path.pop(0)
-                # print("fpath is: ")
-                # print(f_path)
-                # print(p)
-                print("The total cost is: ")
-                print(c)
-                print("The items were picked up in this order: ")
-                print(e)
-                for i in e:
-                    l.append(shelves[str(i)])
-                print("The location of the items that were picked up in order is: ")
-                print(l)
+                try:
+                    start_time = time.time()
+                    p,c,f_path = nearest_neighbor(shelves, route2, 0)
+                    p.append((0,0))
+                    f_path[len(f_path)-1][0].append((0,0))
+                    f_path.pop(0)
+                    # print("fpath is: ")
+                    # print(f_path)
+                    # print(p)
+                    print("The total cost is: ")
+                    print(c)
+                    print("The items were picked up in this order: ")
+                    print(e)
+                    for i in e:
+                        l.append(shelves[str(i)])
+                    print("The location of the items that were picked up in order is: ")
+                    print(l)
 
-                print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
+                    print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
 
-                item_count = 0
-                for r in range(0,len(f_path)-1):
-                    WNS.print_path(str(e[item_count]), shelves, f_path[r])
-                    item_count = item_count + 1
-                WNS.print_path(str(-1), shelves, f_path[len(f_path) - 1])
+                    for r in range(0,len(f_path)-1):
+                        WNS.print_path(str(f_path[r][1]), shelves, f_path[r][0])
+                    WNS.print_path(str(-1), shelves, f_path[len(f_path) - 1][0])
 
 
-                print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
-                english = WNS.show_path(p)
+                    print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
+                    english = WNS.show_path(p)
+                except Exception as ex:
+                    print(ex)
+                    print("NEAREST NEIGHBOR TIMED OUT - NO PATH FOUND TRY AGAIN")
 
             else:
                 print("invalid input")
