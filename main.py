@@ -636,9 +636,6 @@ if __name__ == "__main__":
                 # print("\nThe Permutations for all possible item pickup combos are printed below: \n")
                 done = False
                 try:
-                    # start_time = time.time()
-                    # start_time = timeit.default_timer
-                    # start_time = timer()
                     start_time = time.perf_counter()   
                     path_brute_tsp(shelves, route2)
                     print_steps(shelves, "BFS")
