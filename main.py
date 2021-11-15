@@ -7,6 +7,8 @@ This code can be moved into __main__.py without changing functionality
 """
 import WNS
 import sys
+
+'''
 import subprocess
 import multiprocessing
 from multiprocessing import Process
@@ -20,6 +22,7 @@ b_e = manager.list()
 m = manager.list()
 p = manager.list()
 e = manager.list()
+'''
 
 b_m = [sys.maxsize]
 b_p = []
@@ -499,6 +502,7 @@ if __name__ == "__main__":
 
                     elif best == "2":
                         shelves[str(-1)] = (0,0)
+
                         try:
                             start_time = time.time()
                             p,c,f_path = nearest_neighbor(shelves, pickup_items, 0)

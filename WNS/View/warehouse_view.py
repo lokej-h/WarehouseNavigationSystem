@@ -370,6 +370,7 @@ right=Fore.YELLOW+">"+Style.RESET_ALL
 empty=Fore.BLACK + Style.BRIGHT + "." + Style.RESET_ALL
 shelf=Fore.RED+"X"+Style.RESET_ALL
 product=Fore.BLUE+"0"+Style.RESET_ALL
+start=Fore.GREEN+"S"+Style.RESET_ALL
 
 class g:
     """
@@ -408,6 +409,7 @@ ______________
 |X : Shelf   |
 |. : Empty   |
 |O : Product |
+|S : Start   |
 --------------
 """
     )
@@ -516,6 +518,7 @@ def print_path(pid, shelves, path):
         for i in range(0, len(path) - 1):
             g.warehouse_array[path[i][0]][path[i][1]] = direction(path[i], path[i + 1])
 
+        g.warehouse_array[path[0][0]][path[0][1]]=start #Label start as S
     
         if pid == str(-1):
             print(
