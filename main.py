@@ -7,6 +7,8 @@ This code can be moved into __main__.py without changing functionality
 """
 import WNS
 import sys
+
+'''
 import subprocess
 import multiprocessing
 from multiprocessing import Process
@@ -20,6 +22,7 @@ b_e = manager.list()
 m = manager.list()
 p = manager.list()
 e = manager.list()
+'''
 
 b_m = [sys.maxsize]
 b_p = []
@@ -380,11 +383,14 @@ if __name__ == "__main__":
                     items = WNS.get_item_list()
                     start_pos = (0, 0)
                     # path = WNS.find_item_list_path(start_pos, items, shelves)
-                    path, cost = WNS.find_item_list_path_bfs(start_pos, int(items[0]), shelves)
-                    print("\nThe path to the item is:")
-                    english = WNS.show_path(path)
-                    print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
-                    WNS.print_path(items[0], shelves, path)
+                    try:
+                        path, cost = WNS.find_item_list_path_bfs(start_pos, int(items[0]), shelves)
+                        print("\nThe path to the item is:")
+                        english = WNS.show_path(path)
+                        print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
+                        WNS.print_path(items[0], shelves, path)
+                    except KeyError:
+                        print("Product ID not found.\n")
                 if val == "4":
                     file_path = input("Please input the exact path for the file you want to load as your warehouse\n")
                     WNS.change_warehouse_shelves(file_path)
@@ -432,7 +438,7 @@ if __name__ == "__main__":
                         p.append((0,0))
                         f_path[len(f_path)-1].append((0,0))
                         f_path.pop(0)
-  
+
                         print("The items were picked up in this order: ")
                         print(e)
                         for i in e:
