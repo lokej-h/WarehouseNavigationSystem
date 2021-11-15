@@ -566,7 +566,9 @@ def find_item_list_path_bfs(
         Returns a path from the start coordinates to item passed in. Also returns number of steps taken to get to item. 
 
     """
+    # print(g.warehouse_array[3][2])
     item = str(pickup_item)
+    # print(item)
 
     visited = []
     for i in range(0, len(g.warehouse_array)):
@@ -591,12 +593,21 @@ def find_item_list_path_bfs(
 
     while q.qsize() > 0:
         r = q.get()
+        # print(r)
         if(r[0] == shelves[item][0] and r[1] == shelves[item][1]):
             reached_end = True
             break
         for i in range(0, 4):
             rr = r[0] + dr[i]
             cc = r[1] + dc[i]
+
+            # if r[0] == 3 and r[1] == 0:
+            #     print("rr")
+            #     print(rr)
+            #     print("cc")
+            #     print(cc)
+            #     print(g.warehouse_array[rr][cc])
+
 
             if rr < 0 or cc < 0:
                 continue
@@ -605,8 +616,13 @@ def find_item_list_path_bfs(
 
             if visited[rr][cc] == True:
                 continue
-            if g.warehouse_array[rr][cc] == "X" and (rr != shelves[item][0] or cc != shelves[item][1]):
-                continue
+            if (g.warehouse_array[rr][cc] == "X" or g.warehouse_array[rr][cc] == 'X' or g.warehouse_array[rr][cc] == Fore.RED+"X"+Style.RESET_ALL):
+                # print("x reached: ")
+                # print(rr, cc)
+                if (g.warehouse_array[rr][cc] == "X" or g.warehouse_array[rr][cc] == 'X' or g.warehouse_array[rr][cc] == Fore.RED+"X"+Style.RESET_ALL)  and (rr != shelves[item][0] or cc != shelves[item][1]):
+                    continue
+                # else:
+                #     print("error5")
 
             nl = []
             for i in range(len(r[2])):
@@ -687,7 +703,7 @@ def find_item_list_path_dfs(
 
             if visited[rr][cc] == True:
                 continue
-            if g.warehouse_array[rr][cc] == "X" and (rr != shelves[item][0] or cc != shelves[item][1]):
+            if (g.warehouse_array[rr][cc] == "X" or g.warehouse_array[rr][cc] == 'X' or g.warehouse_array[rr][cc] == Fore.RED+"X"+Style.RESET_ALL) and (rr != shelves[item][0] or cc != shelves[item][1]):
                 continue
 
             nl = []
