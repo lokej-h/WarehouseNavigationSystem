@@ -447,6 +447,8 @@ if __name__ == "__main__":
                     start_pos = (0, 0)
                     # path = WNS.find_item_list_path(start_pos, items, shelves)
                     path, cost = WNS.find_item_list_path_bfs(start_pos, int(items[0]), shelves)
+                    path.pop()
+                    cost = cost - 1
                     print(path)
                     print("\nThe path to the item is:")
                     english = WNS.show_path(path)
