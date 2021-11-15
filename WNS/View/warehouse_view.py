@@ -533,6 +533,8 @@ def print_path(pid, shelves, path):
         print_warehouse(highlight_positions=[shelves[pid]])
         for i in path:
             g.warehouse_array[i[0]][i[1]] = empty
+        if pid!=str(-1):
+            g.warehouse_array[path[-1][0]][path[-1][1]]=shelf #turn product location back into shelf
         print()
 
     except (KeyError):
