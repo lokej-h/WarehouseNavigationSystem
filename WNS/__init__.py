@@ -31,6 +31,7 @@ from .Controller.item_controller import (
 )
 from typing import Dict, Tuple
 import time
+import colorama
 
 
 def init_WNS() -> Dict[str, Tuple[int, int]]:
