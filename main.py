@@ -203,9 +203,9 @@ def path_brute_tsp(shelves, route_arr, end = []):
 #adding path functions DFS ******************************************************************************************************************
 def dfp_path_calculate_tsp_distance(end, shelves):
     mod_end = list(end)
-    mod_end.insert(0, -1)
-    mod_end.append(-1)
-    shelves[str(-1)] = (0,0)
+    mod_end.insert(0, "start")
+    mod_end.append("end")
+    # shelves[str(-1)] = (0,0)
 
     left = 0
     right = 1
@@ -347,14 +347,16 @@ def nearest_neighbor(shelves, route_arr, index):
 def print_steps(shelves, algo):
     try:
         l = []
-        p.append((0,0))
+        # p.append((0,0))
+        p.append(end_loc)
         print("\nThe minimum path after Brute force TSP with ", str(algo), " is: ")
         print(m[0])
 
         print("The items were picked up in this order: ")
         print(e)
         fl.pop(0)
-        fl[len(fl)-1][0].append((0,0))
+        # fl[len(fl)-1][0].append((0,0))
+        fl[len(fl)-1][0].append(end_loc)
 
                    
         for i in e:
@@ -511,8 +513,10 @@ if __name__ == "__main__":
                         try:
                             start_time = time.perf_counter()
                             p,c,f_path = nearest_neighbor(shelves, pickup_items, 0)
-                            p.append((0,0))
-                            f_path[len(f_path)-1][0].append((0,0))
+                            # p.append((0,0))
+                            # f_path[len(f_path)-1][0].append((0,0))
+                            p.append(end_loc)
+                            f_path[len(f_path)-1][0].append(end_loc)
                             f_path.pop(0)
                             print("The total cost is: ")
                             print(c)
@@ -556,7 +560,9 @@ if __name__ == "__main__":
             brute = input()
             if brute == "1":
                 #dfs
-                shelves[str(-1)] = (0,0)
+                # shelves[str(-1)] = (0,0)
+                shelves["start"] = start_loc
+                shelves["end"] = end_loc
                 done = False
                 try:
                     start_time = time.perf_counter()
@@ -571,11 +577,16 @@ if __name__ == "__main__":
                         print_steps(shelves, "DFS")
                     else:
                         print("Error in processing items, try again")
-                    done = False 
+                    done = False
+                #DEBUG add this
+                shelves, row_m, col_m = WNS.init_WNS()   
 
             elif brute == "2":
                 # print("bfs")
-                shelves[str(-1)] = (0,0)
+                # shelves[str(-1)] = (0,0)
+                shelves["start"] = start_loc
+                shelves["end"] = end_loc
+
                 done = False
                 try:
                     start_time = time.perf_counter()   
@@ -589,16 +600,21 @@ if __name__ == "__main__":
                     else:
                         print("Error in processing items, try again")
                     done = False 
-
+                #DEBUG add this
+                shelves, row_m, col_m = WNS.init_WNS()  
 
             elif brute == "3":
-                shelves[str(-1)] = (0,0)
+                # shelves[str(-1)] = (0,0)
+                shelves["start"] = start_loc
+                shelves["end"] = end_loc
                 try:
                     #nearest neighbor
                     start_time = time.perf_counter()
                     p,c,f_path = nearest_neighbor(shelves, route2, 0)
-                    p.append((0,0))
-                    f_path[len(f_path)-1][0].append((0,0))
+                    # p.append((0,0))
+                    p.append(end_loc)
+                    # f_path[len(f_path)-1][0].append((0,0))
+                    f_path[len(f_path)-1][0].append(end_loc)
                     f_path.pop(0)
 
                     print("The total cost is: ")
@@ -614,7 +630,7 @@ if __name__ == "__main__":
 
                     for r in range(0,len(f_path)-1):
                         WNS.print_path(str(f_path[r][1]), shelves, f_path[r][0])
-                    WNS.print_path(str(-1), shelves, f_path[len(f_path) - 1][0])
+                    WNS.print_path("end", shelves, f_path[len(f_path) - 1][0])
 
 
                     print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
@@ -622,6 +638,9 @@ if __name__ == "__main__":
                 except Exception as ex:
                     print(ex)
                     print("NEAREST NEIGHBOR TIMED OUT - NO PATH FOUND TRY AGAIN")
+
+                #DEBUG add this
+                shelves, row_m, col_m = WNS.init_WNS() 
 
             else:
                 print("invalid input")
@@ -646,11 +665,15 @@ if __name__ == "__main__":
             choice = input()
 
             if choice == '1':
+                shelves["start"] = start_loc
+                shelves["end"] = end_loc
                 print(contents[curr_line])
                 start_time = time.perf_counter()
                 p,c,f_path = nearest_neighbor(shelves, contents[curr_line], 0)
-                p.append((0,0))
-                f_path[len(f_path)-1][0].append((0,0))
+                # p.append((0,0))
+                # f_path[len(f_path)-1][0].append((0,0))
+                p.append(end_loc)
+                f_path[len(f_path)-1][0].append(end_loc)
                 f_path.pop(0)
 
                 print("The total cost is: ")
@@ -666,7 +689,7 @@ if __name__ == "__main__":
 
                 for r in range(0,len(f_path)-1):
                     WNS.print_path(str(f_path[r][1]), shelves, f_path[r][0])
-                WNS.print_path(str(-1), shelves, f_path[len(f_path) - 1][0])
+                WNS.print_path("end", shelves, f_path[len(f_path) - 1][0])
 
 
                 print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
@@ -682,9 +705,13 @@ if __name__ == "__main__":
                 print("Select which line to fullfill")
                 l_num = input()
                 start_time = time.perf_counter()
+                shelves["start"] = start_loc
+                shelves["end"] = end_loc
                 p,c,f_path = nearest_neighbor(shelves, contents[int(l_num)-1], 0)
-                p.append((0,0))
-                f_path[len(f_path)-1][0].append((0,0))
+                # p.append((0,0))
+                # f_path[len(f_path)-1][0].append((0,0))
+                p.append(end_loc)
+                f_path[len(f_path)-1][0].append(end_loc)
                 f_path.pop(0)
 
                 print("The total cost is: ")
@@ -700,7 +727,7 @@ if __name__ == "__main__":
 
                 for r in range(0,len(f_path)-1):
                     WNS.print_path(str(f_path[r][1]), shelves, f_path[r][0])
-                WNS.print_path(str(-1), shelves, f_path[len(f_path) - 1][0])
+                WNS.print_path("end", shelves, f_path[len(f_path) - 1][0])
 
 
                 print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
