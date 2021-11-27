@@ -30,9 +30,11 @@ from .Controller.item_controller import (
     get_item_list,
 )
 from typing import Dict, Tuple
+import time
+import colorama
 
 
 def init_WNS() -> Dict[str, Tuple[int, int]]:
     shelves = get_warehouse_shelves()
-    init_array(shelves)
-    return shelves
+    row_m, col_m = init_array(shelves)
+    return shelves, row_m, col_m
