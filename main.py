@@ -10,7 +10,6 @@ import sys
 
 import time
 
-
 b_m = [sys.maxsize]
 b_p = []
 b_e = []
@@ -507,9 +506,11 @@ if __name__ == "__main__":
                         shelves, row_m, col_m = WNS.init_WNS()                        
 
                     elif best == "2":
+
                         # shelves[str(-1)] = (0,0)
                         shelves["start"] = start_loc
                         shelves["end"] = end_loc
+
                         try:
                             start_time = time.perf_counter()
                             p,c,f_path = nearest_neighbor(shelves, pickup_items, 0)
