@@ -496,6 +496,7 @@ def init_array(shelves):
                 row.append(empty)
         arr.append(row)
     g.warehouse_array = arr
+    return cols, rows
 
 
 def direction(a, b):
@@ -564,7 +565,10 @@ def find_item_list_path_bfs(
 
     """
     # print(g.warehouse_array[3][2])
+    print(start_coord)
     item = str(pickup_item)
+    print(shelves[item])
+    print(g.warehouse_array[4][4])
     # print(item)
 
     visited = []
@@ -592,13 +596,14 @@ def find_item_list_path_bfs(
         r = q.get()
         # print(r)
         if(r[0] == shelves[item][0] and r[1] == shelves[item][1]):
+            print("reached end!")
             reached_end = True
             break
         for i in range(0, 4):
             rr = r[0] + dr[i]
             cc = r[1] + dc[i]
 
-            # if r[0] == 3 and r[1] == 0:
+            # if r[0] == 3 and r[1] == 3:
             #     print("rr")
             #     print(rr)
             #     print("cc")
@@ -637,7 +642,7 @@ def find_item_list_path_bfs(
     if reached_end:
         return r[2], len(r[2])
 
-    return -1
+    return -1, -1
 
 
 def find_item_list_path_dfs(
