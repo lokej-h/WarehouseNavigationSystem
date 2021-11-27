@@ -41,9 +41,14 @@ def preprocess_distances(route_arr, shelves):
             pre_dict[(route_arr[j], route_arr[i])] = cost
 
     for x in range(0, len(route_arr)):
-        path, cost = WNS.find_item_list_path_bfs((0,0), route_arr[x], shelves)
-        pre_dict[(-1, route_arr[x])] = cost
-        pre_dict[(route_arr[x], -1)] = cost
+        path, cost = WNS.find_item_list_path_bfs(start_loc, route_arr[x], shelves)
+        pre_dict[("start", route_arr[x])] = cost
+        pre_dict[(route_arr[x], "start")] = cost
+
+    for x in range(0, len(route_arr)):
+        path, cost = WNS.find_item_list_path_bfs(end_loc, route_arr[x], shelves)
+        pre_dict[("end", route_arr[x])] = cost
+        pre_dict[(route_arr[x], "end")] = cost
 
     return pre_dict
 
@@ -128,9 +133,9 @@ def brute_force_tsp(pre_dict, shelves, route_arr, end = []):
 #adding path functions ******************************************************************************************************************
 def path_calculate_tsp_distance(end, shelves):
     mod_end = list(end)
-    mod_end.insert(0, -1)
-    mod_end.append(-1)
-    shelves[str(-1)] = (0,0)
+    mod_end.insert(0, "start")
+    mod_end.append("end")
+    # shelves[str(-1)] = (0,0)
 
     left = 0
     right = 1
@@ -275,8 +280,12 @@ def nearest_neighbor(shelves, route_arr, index):
     for i in route_arr:
         unvisited.add(i)
 
-    current = (0,0)
-    curr_item = -1
+    # current = (0,0)
+    # curr_item = -1
+
+    current = start_loc
+    curr_item = "start"
+
 
     mindistance = sys.maxsize
     shortest_item = 0
@@ -295,7 +304,8 @@ def nearest_neighbor(shelves, route_arr, index):
         same = False
         mindistance = sys.maxsize
         for x in unvisited:
-            if curr_item != -1:
+            # if curr_item != -1:
+            if curr_item != "start":
                 if shelves[str(x)] == shelves[str(curr_item)]:
                     same = True
                     unvisited.remove(x)
@@ -321,8 +331,8 @@ def nearest_neighbor(shelves, route_arr, index):
             nn_path.extend(p[:])
             f_path.append((p[:], str(shortest_item)))
 
-    shelves[str(-1)] = (0,0)
-    p,c = WNS.find_item_list_path_bfs(current, -1, shelves)
+    # shelves[str(-1)] = (0,0)
+    p,c = WNS.find_item_list_path_bfs(current, "end", shelves)
     p.pop()
     c = c-1
     nn_c = nn_c + c
@@ -358,7 +368,7 @@ def print_steps(shelves, algo):
         for r in range(0,len(fl)-1):
             WNS.print_path(str(fl[r][1]), shelves, fl[r][0])
             item_count = item_count + 1
-        WNS.print_path(str(-1), shelves, fl[len(fl) - 1][0])
+        WNS.print_path("end", shelves, fl[len(fl) - 1][0])
 
         print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
         english = WNS.show_path(p)
@@ -425,24 +435,26 @@ if __name__ == "__main__":
                     except:
                         print("Error getting item location, try again")
                 if val == "3":
-                    items = WNS.get_item_list()
-                    print(int(items[0]))
-                    start_pos = (0, 0)
-                    path, cost = WNS.find_item_list_path_bfs(start_loc, int(items[0]), shelves)
-                    print(path)
-                    print(cost)
-                    path.pop()
-                    cost = cost - 1
-                    print(path)
-                    print("\nThe path to the item is:")
-                    english = WNS.show_path(path)
-                    print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
-                    WNS.print_path(items[0], shelves, path)
+                    try:
+                        items = WNS.get_item_list()
+                        print(int(items[0]))
+                        start_pos = (0, 0)
+                        path, cost = WNS.find_item_list_path_bfs(start_loc, int(items[0]), shelves)
+                        print(path)
+                        print(cost)
+                        path.pop()
+                        cost = cost - 1
+                        print(path)
+                        print("\nThe path to the item is:")
+                        english = WNS.show_path(path)
+                        print("\n\n********************DIRECTIONS SHOWN ON MAP********************\n\n")
+                        WNS.print_path(items[0], shelves, path)
 
-                    #DEBUG add this
-                    shelves, row_m, col_m = WNS.init_WNS()
+                        #DEBUG add this
+                        shelves, row_m, col_m = WNS.init_WNS()
+                    except:
+                        print("Error with selected item, try again")
 
-                    
                     # try:
                     #     items = WNS.get_item_list()
                     #     start_pos = (0, 0)
@@ -460,7 +472,7 @@ if __name__ == "__main__":
                     file_path = input("Please input the exact path for the file you want to load as your warehouse\n")
                     try:
                         WNS.change_warehouse_shelves(file_path)
-                        shelves = WNS.init_WNS()
+                        shelves, row_m, col_m = WNS.init_WNS()
                     except:
                         print("Invalid file. Try Again")
                 if val == "5":
@@ -472,7 +484,9 @@ if __name__ == "__main__":
                     print("Input 1 to find the BEST POSSIBLE route to pickup these items, Input 2 to find a route to pickup the items in FASTEST time")
                     best = input()
                     if best == "1":
-                        shelves[str(-1)] = (0,0)
+                        # shelves[str(-1)] = (0,0)
+                        shelves["start"] = start_loc
+                        shelves["end"] = end_loc
                         done = False
                         try:
                             start_time = time.perf_counter()   
@@ -487,8 +501,13 @@ if __name__ == "__main__":
                                 print("Error in processing items, try again")
                             done = False
 
+                        #DEBUG add this
+                        shelves, row_m, col_m = WNS.init_WNS()                        
+
                     elif best == "2":
-                        shelves[str(-1)] = (0,0)
+                        # shelves[str(-1)] = (0,0)
+                        shelves["start"] = start_loc
+                        shelves["end"] = end_loc
                         try:
                             start_time = time.perf_counter()
                             p,c,f_path = nearest_neighbor(shelves, pickup_items, 0)
@@ -510,7 +529,7 @@ if __name__ == "__main__":
 
                             for r in range(0,len(f_path)-1):
                                 WNS.print_path(str(f_path[r][1]), shelves, f_path[r][0])
-                            WNS.print_path(str(-1), shelves, f_path[len(f_path) - 1][0])
+                            WNS.print_path("end", shelves, f_path[len(f_path) - 1][0]) #changed
 
 
                             print("\n********************DIRECTIONS SHOWN IN ENGLISH********************\n")
@@ -519,6 +538,9 @@ if __name__ == "__main__":
                         except Exception as ex:
                             print(ex)
                             print("NEAREST NEIGHBOR TIMED OUT - NO PATH FOUND TRY AGAIN")
+
+                        #DEBUG add this
+                        shelves, row_m, col_m = WNS.init_WNS()  
 
                     else:
                         print("Invalid selection try again")
@@ -703,7 +725,7 @@ if __name__ == "__main__":
             print("Enter end col coordinate")
             end_y = int(input())
 
-            if any([True for ke,va in shelves.items() if va == (start_x - correction, start_y)]) and (start_x - correction != 0 or start_y != 0):
+            if any([True for ke,va in shelves.items() if va == (start_x - correction, start_y) and ke != "start" and ke != "end"]):
                 print("Starting location invalid, try again")
 
             elif start_x - correction < 0 or start_x - correction > col_m:
@@ -718,7 +740,7 @@ if __name__ == "__main__":
             elif end_y < 0 or end_y > row_m:
                 print("ending location out of range, try again")
 
-            elif any([True for ke,va in shelves.items() if va == (end_x - correction, end_y)]):
+            elif any([True for ke,va in shelves.items() if (va == (end_x - correction, end_y) and ke != "start" and ke != "end")]):
                 print("Ending location invalid, try again")
             else:
                 start_x = start_x - correction

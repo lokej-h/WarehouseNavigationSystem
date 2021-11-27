@@ -565,10 +565,10 @@ def find_item_list_path_bfs(
 
     """
     # print(g.warehouse_array[3][2])
-    print(start_coord)
+    # print(start_coord)
     item = str(pickup_item)
-    print(shelves[item])
-    print(g.warehouse_array[4][4])
+    # print(shelves[item])
+    # print(g.warehouse_array[4][4])
     # print(item)
 
     visited = []
@@ -596,7 +596,7 @@ def find_item_list_path_bfs(
         r = q.get()
         # print(r)
         if(r[0] == shelves[item][0] and r[1] == shelves[item][1]):
-            print("reached end!")
+            # print("reached end!")
             reached_end = True
             break
         for i in range(0, 4):
