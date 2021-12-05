@@ -11,10 +11,12 @@ import sys
 import time
 
 
+
 #backup variables for max cost path and order of items
 b_m = [sys.maxsize] #cost
 b_p = [] #path
 b_e = [] #items
+
 
 #variables for max cost path and order of items
 m = [sys.maxsize]
@@ -623,11 +625,13 @@ if __name__ == "__main__":
                         #DEBUG add this
                         shelves, row_m, col_m = WNS.init_WNS()  
 
+
                     #nn
                     elif brute == "3":
                         # shelves[str(-1)] = (0,0)
                         shelves["start"] = start_loc
                         shelves["end"] = end_loc
+
                         try:
                             #nearest neighbor
                             start_time = time.perf_counter()
