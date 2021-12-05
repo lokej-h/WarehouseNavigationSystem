@@ -4,10 +4,10 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['D:\\Student\\Documents\\A_College\\Grad\\21-22_Masters\\0_Fall\\EECS 221 (QV)\\DaM WNS'],
+             pathex=['Z:\\github\\workspace'],
              binaries=[],
              datas=[],
-             hiddenimports=[],
+             hiddenimports=['colorama'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
