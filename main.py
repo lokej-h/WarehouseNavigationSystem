@@ -137,9 +137,9 @@ def brute_force_tsp(pre_dict, shelves, route_arr, end = []):
 
 
 #These functions don't use the preprocess dictionaries, instead they call BFS directly to get the cost and path
-#The reason for this is because we want to navigate exactly from current location to next item. 
+#The reason for this is because we want to navigate exactly from current location to next item.
 #This information isn't available in the preprocess dictionary since it only contains costs of distances from one item to every
-#other item. 
+#other item.
 #adding path functions ******************************************************************************************************************
 def path_calculate_tsp_distance(end, shelves):
     mod_end = list(end)
@@ -304,7 +304,7 @@ def nearest_neighbor(shelves, route_arr, index):
     f_path = [[]]
     nn_c = 0
 
-    same = False #if two items in succession are on the same shelf don't do any additional calculation, both items can be picked up from one spot. 
+    same = False #if two items in succession are on the same shelf don't do any additional calculation, both items can be picked up from one spot.
 
     while(len(unvisited) > 0):
         end_time = time.perf_counter()
@@ -368,7 +368,7 @@ def print_steps(shelves, algo):
         # fl[len(fl)-1][0].append((0,0))
         fl[len(fl)-1][0].append(end_loc)
 
-                   
+
         for i in e:
             l.append(shelves[str(i)])
         print("The location of the items that were picked up in order is: ")
@@ -412,13 +412,12 @@ if __name__ == "__main__":
 
     while True:
         try:
-            #Developer Testing mode, technician could use this hardcoded value as a base testing case and get timing results, or debug program. 
-            route2 = [427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313] 
+            #Developer Testing mode, technician could use this hardcoded value as a base testing case and get timing results, or debug program.
+            route2 = [427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313]
             l = []
             curr_line = 0
             lines_done = set() # set to store file lines that are fulfilled
 
-            shelves, row_m, col_m = WNS.init_WNS()
             mode = "0"
             while mode != "5":
                 b_m = [sys.maxsize]
@@ -428,7 +427,7 @@ if __name__ == "__main__":
                 m = [sys.maxsize]
                 p = []
                 e = []
-                l = []  
+                l = []
 
                 pcount = True
 
@@ -448,7 +447,7 @@ if __name__ == "__main__":
                         p = []
                         e = []
                         #list showing location of items in e (l is a list of tuples) - debug variable
-                        l = []  
+                        l = []
 
                         pcount = True
 
@@ -518,7 +517,7 @@ if __name__ == "__main__":
                                 shelves["end"] = end_loc
                                 done = False
                                 try:
-                                    start_time = time.perf_counter()   
+                                    start_time = time.perf_counter()
                                     path_brute_tsp(shelves, pickup_items)
                                     print_steps(shelves, "BFS")
                                     done = True
@@ -531,7 +530,7 @@ if __name__ == "__main__":
                                     done = False
 
                                 #DEBUG add this
-                                shelves, row_m, col_m = WNS.init_WNS()                        
+                                shelves, row_m, col_m = WNS.init_WNS()
 
                             #retrieve list of items using nearest neighbor
                             elif best == "2":
@@ -572,7 +571,7 @@ if __name__ == "__main__":
                                     print("NEAREST NEIGHBOR TIMED OUT - NO PATH FOUND TRY AGAIN")
 
                                 #DEBUG add this
-                                shelves, row_m, col_m = WNS.init_WNS()  
+                                shelves, row_m, col_m = WNS.init_WNS()
 
                             else:
                                 print("Invalid selection try again")
@@ -610,7 +609,7 @@ if __name__ == "__main__":
                                 print("Error in processing items, try again")
                             done = False
                         #DEBUG add this
-                        shelves, row_m, col_m = WNS.init_WNS()   
+                        shelves, row_m, col_m = WNS.init_WNS()
 
                     #bfs
                     elif brute == "2":
@@ -621,7 +620,7 @@ if __name__ == "__main__":
 
                         done = False
                         try:
-                            start_time = time.perf_counter()   
+                            start_time = time.perf_counter()
                             path_brute_tsp(shelves, route2)
                             print_steps(shelves, "BFS")
                             done = True
@@ -631,9 +630,9 @@ if __name__ == "__main__":
                                 print_steps(shelves, "BFS")
                             else:
                                 print("Error in processing items, try again")
-                            done = False 
+                            done = False
                         #DEBUG add this
-                        shelves, row_m, col_m = WNS.init_WNS()  
+                        shelves, row_m, col_m = WNS.init_WNS()
 
 
                     #nn
@@ -675,7 +674,7 @@ if __name__ == "__main__":
                             print("NEAREST NEIGHBOR TIMED OUT - NO PATH FOUND TRY AGAIN")
 
                         #DEBUG add this
-                        shelves, row_m, col_m = WNS.init_WNS() 
+                        shelves, row_m, col_m = WNS.init_WNS()
 
                     else:
                         print("invalid input")
@@ -863,6 +862,6 @@ if __name__ == "__main__":
             break
 
 
-    
+
 
 
