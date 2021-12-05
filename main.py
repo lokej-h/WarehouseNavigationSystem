@@ -400,6 +400,16 @@ if __name__ == "__main__":
     # route2 = [108335, 391825, 340367, 286457, 661741]
     # route2 = [281610, 342706, 111873, 198029, 366109, 287261, 76283]
     full_exit = False
+
+    while True:
+        try:
+            file_path = input("Please input the exact path for the file you want to load as your warehouse\n")
+            WNS.change_warehouse_shelves(file_path)
+            shelves, row_m, col_m = WNS.init_WNS()
+            break
+        except:
+            pass
+
     while True:
         try:
             #Developer Testing mode, technician could use this hardcoded value as a base testing case and get timing results, or debug program. 
