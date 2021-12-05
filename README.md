@@ -7,6 +7,8 @@
 ```bash
 inputs/
 ├─ qvBox-warehouse-data-f20-v01_1041763401.txt
+├─ qvBox-warehouse-data-test.txt
+├─ qvBox-warehouse-orders-list-part01.txt
 main.exe
 ```
 If the warehouse file is not named like the file above, rename it to match “qvBox-warehouse-data-f20-v01_1041763401.txt”
@@ -30,5 +32,4 @@ Using pyinstaller, run the command - pyinstaller --onefile [filename] to create 
 - [x] Find any item
 - [x] Basic pathfinding 
 - [x] Print path
-- [ ] Full MVC compliance
-- [ ] Start pathfinding from any open space
+- [x] Start pathfinding from any open space
