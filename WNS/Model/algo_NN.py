@@ -6,7 +6,7 @@ Created on Thu Dec  9 20:11:23 2021
 """
 import time
 from collections import deque, defaultdict
-from functools import cached_property, partial
+from functools import lru_cache, partial
 from itertools import permutations, chain, tee
 from typing import Dict, Tuple, List, Set, Callable
 from ..View.warehouse_view import find_item_list_path_bfs
@@ -102,7 +102,7 @@ def get_lowest_cost_path(
 
 
 # this is only computed once thanks to @cache
-@cached_property
+# @lru_cache
 def get_inverted_dict(d):
     """get the inverted dictionary of d, if values of d have duplicates,
     appended to list"""
