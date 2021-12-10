@@ -183,7 +183,8 @@ def get_rotated_NN_path(
         start, true_start, true_end, shelves, shelves_to_visit, path_map, cost_table,
     )
     route = deque(path)
-    route.rotate(-route.index(true_start))
+    # needs if just in case start and end are same to ensure correct rotation
+    route.rotate(-route.index(true_start) - (1 if true_start == true_end else 0))
     return list(route), cost
 
 
