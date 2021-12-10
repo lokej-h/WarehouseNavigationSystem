@@ -351,10 +351,8 @@ def nearest_neighbor(shelves, route_arr, index):
             curr_item = shortest_item
             e.append(shortest_item)
 
-            p,c = WNS.find_item_list_path_bfs(current, shortest_item, shelves)
-            p.pop()
-            c = c-1
             # find path and cost to the closest item
+            p,c = go_to_next_without_shelf(current, shortest_item, shelves)
             # current is now the last coordinate (pickup location)
             current = (p[len(p) -1][0], p[len(p) -1][1])
             # update total cost
@@ -364,9 +362,8 @@ def nearest_neighbor(shelves, route_arr, index):
             f_path.append((p[:], str(shortest_item)))
 
     # shelves[str(-1)] = (0,0)
-    p,c = WNS.find_item_list_path_bfs(current, "end", shelves)
-    p.pop()
-    c = c-1
+
+    p,c = go_to_next_without_shelf(current, "end", shelves)
     nn_c = nn_c + c
     nn_path.extend(p[:])
     f_path.append((p[:], str(-1)))
@@ -374,6 +371,14 @@ def nearest_neighbor(shelves, route_arr, index):
 
     return nn_path,nn_c, f_path
 
+def go_to_next_without_shelf(start, end, shelves):
+    # find path and cost to item
+    p,c = WNS.find_item_list_path_bfs(start, end, shelves)
+    # we don't want to go into the shelf
+    p.pop()
+    # we don't walk into the shelf
+    c = c-1
+    return p, c
 
 def print_steps(shelves, algo):
     try:
