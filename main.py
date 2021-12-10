@@ -650,7 +650,9 @@ if __name__ == "__main__":
                                 shelves["end"] = end_loc
                                 try:
                                     start_time = time.perf_counter()
-                                    p,c,f_path = nearest_neighbor(shelves, pickup_items, 0)
+                                    p, f_path, e, c = WNS.nearest_neighbor(
+                                        shelves, pickup_items, t_o, start_loc, end_loc
+                                    )
                                     # p.append((0,0))
                                     # f_path[len(f_path)-1][0].append((0,0))
                                     p.append(end_loc)
@@ -755,7 +757,9 @@ if __name__ == "__main__":
                         try:
                             #nearest neighbor
                             start_time = time.perf_counter()
-                            p,c,f_path = nearest_neighbor(shelves, route2, 0)
+                            p, f_path, e, c = WNS.nearest_neighbor(
+                                shelves, route2, t_o, start_loc, end_loc
+                            )
                             # p.append((0,0))
                             p.append(end_loc)
                             # f_path[len(f_path)-1][0].append((0,0))
@@ -831,7 +835,9 @@ if __name__ == "__main__":
 
                         print(contents[curr_line])
                         start_time = time.perf_counter()
-                        p,c,f_path = nearest_neighbor(shelves, contents[curr_line], 0)
+                        p, f_path, e, c = WNS.nearest_neighbor(
+                            shelves, contents[curr_line], t_o, start_loc, end_loc
+                        )
                         # p.append((0,0))
                         # f_path[len(f_path)-1][0].append((0,0))
                         p.append(end_loc)
@@ -876,7 +882,9 @@ if __name__ == "__main__":
                         start_time = time.perf_counter()
                         shelves["start"] = start_loc
                         shelves["end"] = end_loc
-                        p,c,f_path = nearest_neighbor(shelves, contents[int(l_num)-1], 0)
+                        p, f_path, e, c = WNS.nearest_neighbor(
+                            shelves, contents[int(l_num)-1], t_o, start_loc, end_loc
+                        )
                         # p.append((0,0))
                         # f_path[len(f_path)-1][0].append((0,0))
                         p.append(end_loc)
