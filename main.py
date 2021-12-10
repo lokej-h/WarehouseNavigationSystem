@@ -332,9 +332,15 @@ def nearest_neighbor(shelves, route_arr, index):
 
         unvisited.add(node)
 
+        raise_if_timeout(start_time, t_o)
+
     return final_nn_path, final_nn_c, final_f_path
 
-
+def raise_if_timeout(start_time, t_o):
+    end_time = time.perf_counter()
+    if end_time - start_time > t_o:
+        print("nearest neighbor timed out")
+        raise Exception("Timeout!")
 
 def nearest_neighbor_calculate(pre_dict, t_o, visited, unvisited, current, curr_item):
     # constant for finding minimum distance
