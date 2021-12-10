@@ -228,7 +228,7 @@ def get_path_from_ordered_coordinate_list(
     # because of the way we handle 4 side pickup, a path_map is always invalid
     current = path_steps[0]
     # don't include end in the pairwise iteration as we have a special case
-    for next_node in path_steps[1:-2]:
+    for next_node in path_steps[1:-1]:
         # path_to = path_map[current, next_node]
         path_to, _ = go_to_next_without_shelf(
             current, inverted_shelves[next_node][0], shelves
