@@ -93,7 +93,12 @@ def get_lowest_cost_path(
     then run an argmin on the iterator
     """
     pathcosts = starmap(pathmaker, starting_places)
-    return min(pathcosts, key=lambda path, cost: cost)
+    try:
+        return min(pathcosts, key=lambda path, cost: cost)
+    except TimeoutError as e:
+        print(e.message)
+        # in the very unlikely event we timeout here we have to return something
+        return pathcosts[0]
 
 
 # this is only computed once thanks to @cache
@@ -110,8 +115,7 @@ def get_inverted_dict(d):
 def raise_if_timeout():
     end_time = time.perf_counter()
     if end_time - g.start_time > g.timeout:
-        print("nearest neighbor timed out")
-        raise Exception("Timeout!")
+        raise TimeoutError("Nearest Neighbor timed out, returning best found.")
 
 
 def get_NN_path(
@@ -154,6 +158,7 @@ def get_NN_path(
         if where_you_are is true_end:
             where_you_are = true_start
             the_places_youve_been.append(where_you_are)
+        raise_if_timeout()
     # add the last leg home
     # we don't need to add the start back to the places youve been because
     # that would end up with a duplicate node which we'd only remove later
@@ -192,7 +197,7 @@ def get_shelves_to_visit(
 
 
 def get_path_from_ordered_coordinate_list(
-    places: List[Coordinate],
+    path_steps: List[Coordinate],
     shelves: Dict[str, Coordinate],
     path_map: Dict[Tuple[Coordinate, Coordinate], List[Coordinate]],
 ) -> Tuple[List[Coordinate], List[Tuple[List[Coordinate], str]], List[int]]:
@@ -210,7 +215,7 @@ def get_path_from_ordered_coordinate_list(
     ordered_PIDs = list()
 
     # don't include end in the pairwise iteration as we have a special case
-    for current, next_node in pairwise(places[:-1]):
+    for current, next_node in pairwise(path_steps[:-1]):
         path_to = path_map[current, next_node]
         PIDs_targeted = inverted_shelves[next_node]
 
@@ -272,3 +277,7 @@ def nearest_neighbor(
     )
 
     # recover actual path
+    return (
+        *get_path_from_ordered_coordinate_list(min_path, shelves, path_map),
+        min_cost,
+    )
