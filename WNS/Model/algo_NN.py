@@ -94,11 +94,11 @@ def get_lowest_cost_path(
     """
     pathcosts = map(pathmaker, starting_places)
     try:
-        return min(pathcosts, key=lambda path, cost: cost)
+        return min(pathcosts, key=lambda pathcost: pathcost[1])
     except TimeoutError as e:
         print(e.message)
         # in the very unlikely event we timeout here we have to return something
-        return pathcosts[0]
+        return next(pathcosts)
 
 
 # this is only computed once thanks to @cache
