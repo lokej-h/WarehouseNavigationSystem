@@ -301,7 +301,9 @@ def nearest_neighbor(shelves, route_arr, index):
     curr_item = "start"
 
     # all nodes are al the PIDs plus the special nodes
+    # we need this to be const for iterating
     all_nodes = unvisited.union([curr_item])
+    # unvisited will pop a node each iter
     unvisited = all_nodes.copy()
 # =============================================================================
 #     # make a reverse lookup table to get PID ( (coordinate) -> PID )
@@ -309,18 +311,21 @@ def nearest_neighbor(shelves, route_arr, index):
 #     inverse_shelves = {v:k for k,v in shelves.items()}
 #
 # =============================================================================
+    # same minimum startegy
     min_distance_found = sys.maxsize
-    final_nn_path, final_nn_c, final_f_path = (0,0,0)
     for node in all_nodes:
         # remove from unvisited and store as current
-        curr_item = node
         unvisited -= {node}
+        curr_item = node
+        # special case if the next one is the start location
         if curr_item == "start":
             current = start_loc
         else:
             current = shelves[str(node)]
 
+        # do NN from the current node
         nn_path, nn_c, f_path = nearest_neighbor_calculate(pre_dict, t_o, visited, unvisited, current, curr_item)
+        # if it is a shorter path, return
         if nn_c < min_distance_found:
             final_nn_path, final_nn_c, final_f_path = nn_path, nn_c, f_path
             min_distance_found = final_nn_c
