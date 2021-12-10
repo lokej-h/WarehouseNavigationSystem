@@ -6,12 +6,19 @@ Created on Thu Dec  9 20:11:23 2021
 """
 import time
 from collections import deque, defaultdict
-from functools import cached_property
-from itertools import chain, permutations
-from typings import Dict, Tuple, List, Set
+from functools import cached_property, partial
+from itertools import chain, permutations, starmap, tee
+from typings import Dict, Tuple, List, Set, Callable
 from ..View.warehouse_view import find_item_list_path_bfs
 
 Coordinate = Tuple[int, int]
+
+# https://docs.python.org/3.8/library/itertools.html?highlight=flatten#itertools-recipes
+def pairwise(iterable):
+    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
 
 
 def get_paths_and_costs(
@@ -64,8 +71,15 @@ def get_nearest_neighbor(
     return min(available_neighbors, key=lambda v: cost_table[node, v])
 
 
-def get_lowest_cost_path():
-    pass
+def get_lowest_cost_path(pathmaker: Callable[[Coordinate], Tuple[List[Coordinate], int]], starting_places: Set[Coordinate]):
+    """
+    get the lowest cost path
+    we do this as efficiently as we can using iterators
+    create a starmap to map function calls to arguments
+    then run an argmin on the iterator
+    """
+    pathcosts = starmap(pathmaker, starting_places)
+    return min(pathcosts, key=lambda path, cost: cost)
 
 
 # this is only computed once thanks to @cache
@@ -143,7 +157,6 @@ def get_rotated_NN_path(
     timeout: float,
     path_map: Dict[Tuple[Coordinate, Coordinate], List[Coordinate]],
     cost_table: Dict[Set[Tuple[Coordinate, Coordinate]], int],
-    start_node: Coordinate,
 ) -> Tuple[List[Coordinate], int]:
     """
     gets the NN path and returns the rotated version for you
@@ -160,7 +173,7 @@ def get_rotated_NN_path(
         cost_table,
     )
     route = deque(path)
-    route.rotate(-route.index(start_node))
+    route.rotate(-route.index(true_start))
     return list(route), cost
 
 
@@ -204,15 +217,18 @@ def nearest_neighbor(
     shelves_to_visit = get_shelves_to_visit(shelves, items_to_visit)
     places_to_start = {start_node, end_node} | shelves_to_visit
 
-    for starting_position in places_to_start:
-        coordinate_path, cost = get_rotated_NN_path(
-            starting_position,
-            start_node,
-            end_node,
-            shelves,
-            shelves_to_visit,
-            timeout,
-            path_map,
-            cost_table,
-            start_node,
-        )
+    # create a much simpler version of the function for easier calls
+    get_started_rotated_NN_path = partial(
+        get_rotated_NN_path,
+        start_node=start_node,
+        end_node=end_node,
+        shelves=shelves,
+        shelves_to_visit=shelves_to_visit,
+        timeout=timeout,
+        path_map=path_map,
+        cost_table=cost_table,
+    )
+
+    min_path, min_cost = get_lowest_cost_path(get_started_rotated_NN_path, places_to_start)
+
+    # recover actual path
