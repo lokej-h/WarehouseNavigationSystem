@@ -446,17 +446,19 @@ def get_inverted_dict(d):
 
 
 def get_all_items_where_we_are(location, shelves):
+    '''returns list of all PIDs at a location'''
     inverted_shelves = get_inverted_dict(shelves)
     return inverted_shelves[location]
 
 
 def get_nearest_neighbor(node, available_neighbors, cost_table):
+    '''gets the nearest neighbor to node'''
     return min(available_neighbors, key=lambda v: cost_table[node, v])
 
 
-def go_to_next_without_shelf(start, end, shelves):
+def go_to_next_without_shelf(start, endPID, shelves):
     # find path and cost to item
-    p,c = WNS.find_item_list_path_bfs(start, end, shelves)
+    p,c = WNS.find_item_list_path_bfs(start, endPID, shelves)
     # we don't want to go into the shelf
     p.pop()
     # we don't walk into the shelf
