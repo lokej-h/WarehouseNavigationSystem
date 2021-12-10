@@ -211,6 +211,7 @@ def get_path_from_ordered_coordinate_list(
     path_steps: List[Coordinate],
     shelves: Dict[str, Coordinate],
     path_map: Dict[Tuple[Coordinate, Coordinate], List[Coordinate]],
+    items_to_visit: List[int],
 ) -> Tuple[List[Coordinate], List[Tuple[List[Coordinate], str]], List[int]]:
     """
     recover the steps in order to walk in the warehouse
@@ -234,7 +235,7 @@ def get_path_from_ordered_coordinate_list(
             current, inverted_shelves[next_node][0], shelves
         )
         current = path_to[-1]
-        PIDs_targeted = inverted_shelves[next_node]
+        PIDs_targeted = tuple(set(inverted_shelves[next_node]) & set(map(str, items_to_visit)))
 
         flat_path.extend(path_to)
         piecewise_with_target.append((path_to, PIDs_targeted[0]))
@@ -297,6 +298,6 @@ def nearest_neighbor(
 
     # recover actual path
     return (
-        *get_path_from_ordered_coordinate_list(min_path, shelves, path_map),
+        *get_path_from_ordered_coordinate_list(min_path, shelves, path_map, items_to_visit),
         min_cost,
     )
