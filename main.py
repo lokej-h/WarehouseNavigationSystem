@@ -283,51 +283,69 @@ def dfs_path_brute_tsp(shelves, route_arr, end = []):
 
 #This function uses the greedy nearest neighbor algorithm to calculate the path and cost between multiple itmes.
 def nearest_neighbor(shelves, route_arr, index):
+    # timeout
     global t_o
+    # get distance between two points ( (A, B) -> cost ) where A is start and B is end
+    # str "start" and "end" are keys for the start and end locations
     pre_dict = preprocess_distances(route_arr, shelves)
+    # visited and unvisited sets
+    # initialize unvisited to all PIDs
     visited = set()
     unvisited = set()
     for i in route_arr:
         unvisited.add(i)
 
-    # current = (0,0)
-    # curr_item = -1
-
+    # get start location from global
+    # set current item
     current = start_loc
     curr_item = "start"
 
-
+    # constant for finding minimum distance
+    # keep track of the shortest item's PID
     mindistance = sys.maxsize
     shortest_item = 0
 
-    nn_path = []
-    f_path = [[]]
+    # List of coordinates of where to go
+    nn_path = [] # List[tuple[int, int]]
+    # List of tuples (directions to, PID)
+    f_path = [[]] # List[tuple[List[tuple[int,int], str]]]
+    # total computed cost of path
     nn_c = 0
 
-    same = False #if two items in succession are on the same shelf don't do any additional calculation, both items can be picked up from one spot.
+    same = False #if two or more items in succession are on the same shelf don't do any additional calculation, all items can be picked up from one spot.
 
-    while(len(unvisited) > 0):
+    # handles 1 item at a time i.e. if there are duplicates, that's one iter
+    while (len(unvisited) > 0):
         end_time = time.perf_counter()
         if end_time - start_time > t_o:
             print("nearest neighbor timed out")
             raise Exception("Timeout!")
         same = False
         mindistance = sys.maxsize
+
+        # for all the unvisited nodes
         for x in unvisited:
-            # if curr_item != -1:
+            # if not the start
             if curr_item != "start":
+                # and we have an item at the same spot
+                # mark them both as visited and add to visited/remove from unvisited
                 if shelves[str(x)] == shelves[str(curr_item)]:
+                    # set same flag (we have a duplicate)
                     same = True
                     unvisited.remove(x)
                     visited.add(x)
                     curr_item = x
                     e.append(curr_item)
                     break
+            # if we found a new closest item
+            # make it the closest found item
             if pre_dict[curr_item, x] < mindistance:
                 mindistance = pre_dict[curr_item, x]
                 shortest_item = x
 
+        # if we know the next item isn't a duplicate
         if same == False:
+            # update bookeeping
             unvisited.remove(shortest_item)
             visited.add(shortest_item)
             curr_item = shortest_item
@@ -336,8 +354,12 @@ def nearest_neighbor(shelves, route_arr, index):
             p,c = WNS.find_item_list_path_bfs(current, shortest_item, shelves)
             p.pop()
             c = c-1
+            # find path and cost to the closest item
+            # current is now the last coordinate (pickup location)
             current = (p[len(p) -1][0], p[len(p) -1][1])
+            # update total cost
             nn_c = nn_c + c
+            # add this path to our final paths
             nn_path.extend(p[:])
             f_path.append((p[:], str(shortest_item)))
 
@@ -351,7 +373,6 @@ def nearest_neighbor(shelves, route_arr, index):
 
 
     return nn_path,nn_c, f_path
-
 
 
 def print_steps(shelves, algo):
