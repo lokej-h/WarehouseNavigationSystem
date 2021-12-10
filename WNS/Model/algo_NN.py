@@ -131,15 +131,14 @@ def get_NN_path(
     returns a single NN path given a start and end
     this is where we force start to come after end (see nearest_neighbor)
     """
-
-    the_places_you_can_go = the_places_youll_go - {start} | {true_end}
-
+    the_places_you_can_go = the_places_youll_go - {start, true_start} | {true_end}
     the_places_youve_been = [start]
 
     where_you_are = start
     cost = 0
 
-    for _ in range(len(the_places_you_can_go)):
+    # -1 since we don't need all the iterations if start is at our end
+    for _ in range(len(the_places_you_can_go) - (1 if start == true_end else 0)):
         nearest_neighbor = get_nearest_neighbor(
             where_you_are,
             the_places_you_can_go - set(the_places_youve_been),
