@@ -60,7 +60,7 @@ def get_paths_and_costs(
     # we use the permutations function to go through every permutation of
     # shelves i.e. AB and BA, the two is to limit each output to 2 items
     for start, end in permutations(items_to_visit + ["start", "end"], 2):
-        path, cost = find_item_list_path_bfs(shelves[str(start)], end, shelves)
+        path, cost = go_to_next_without_shelf(shelves[str(start)], end, shelves)
         key = (shelves[str(start)], shelves[str(end)])
         path_map[key] = path
         cost_table[frozenset(key)] = cost
@@ -196,6 +196,17 @@ def get_shelves_to_visit(
     return {shelves[str(item)] for item in items_to_visit}
 
 
+def go_to_next_without_shelf(start, endPID, shelves):
+    """going into the shelf deletes it"""
+    # find path and cost to item
+    p, c = find_item_list_path_bfs(start, endPID, shelves)
+    # we don't want to go into the shelf
+    p.pop()
+    # we don't walk into the shelf
+    c = c - 1
+    return p, c
+
+
 def get_path_from_ordered_coordinate_list(
     path_steps: List[Coordinate],
     shelves: Dict[str, Coordinate],
@@ -214,14 +225,22 @@ def get_path_from_ordered_coordinate_list(
     piecewise_with_target = list()
     ordered_PIDs = list()
 
+    # because of the way we handle 4 side pickup, a path_map is always invalid
+    current = path_steps[0]
     # don't include end in the pairwise iteration as we have a special case
-    for current, next_node in pairwise(path_steps[:-1]):
-        path_to = path_map[current, next_node]
+    for next_node in path_steps[1:-2]:
+        # path_to = path_map[current, next_node]
+        path_to, _ = go_to_next_without_shelf(
+            current, inverted_shelves[next_node][0], shelves
+        )
+        current = path_to[-1]
         PIDs_targeted = inverted_shelves[next_node]
 
         flat_path.extend(path_to)
         piecewise_with_target.append((path_to, PIDs_targeted[0]))
         ordered_PIDs.extend(PIDs_targeted)
+    # go to end
+    path_to, _ = go_to_next_without_shelf(current, "end", shelves)
     # using -1 flag for end as in main.py
     flat_path.extend(path_to)
     piecewise_with_target.append((path_to, -1))
