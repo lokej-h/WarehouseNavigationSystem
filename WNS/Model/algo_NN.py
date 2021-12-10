@@ -88,19 +88,19 @@ def raise_if_timeout(start_time: float, t_o: int):
 
 def get_NN_path(
     start: Coordinate,
-    end: Coordinate,
+    true_start: Coordinate,
+    true_end: Coordinate,
     shelves: Dict[str, Coordinate],
-    items_to_visit: List[int],
+    the_places_youll_go: Set[Coordinate],
     timeout: float,
     path_map: Dict[Tuple[Coordinate, Coordinate], List[Coordinate]],
     cost_table: Dict[Set[Tuple[Coordinate, Coordinate]], int],
-):
+) -> Tuple[List[Coordinate], int]:
     """
     returns a single NN path given a start and end
     this is where we force start to come after end (see nearest_neighbor)
     """
 
-    the_places_youll_go = {start, end} + set(items_to_visit)
     the_places_you_can_go = the_places_youll_go - {start}
 
     the_places_youve_been = [start]
@@ -124,8 +124,8 @@ def get_NN_path(
         # force start to be after end, cost doesn't matter here since it
         # does not affect minimum cost (constant applied to all paths)
         # and should not be factored in the output of the cost
-        if where_you_are is end:
-            where_you_are = start
+        if where_you_are is true_end:
+            where_you_are = true_start
             the_places_youve_been.append(where_you_are)
     # add the last leg home
     # we don't need to add the start back to the places youve been because
@@ -136,26 +136,37 @@ def get_NN_path(
 
 def get_rotated_NN_path(
     start: Coordinate,
-    end: Coordinate,
+    true_start: Coordinate,
+    true_end: Coordinate,
     shelves: Dict[str, Coordinate],
-    items_to_visit: List[int],
+    shelves_to_visit: Set[Coordinate],
     timeout: float,
     path_map: Dict[Tuple[Coordinate, Coordinate], List[Coordinate]],
     cost_table: Dict[Set[Tuple[Coordinate, Coordinate]], int],
     start_node: Coordinate,
-):
+) -> Tuple[List[Coordinate], int]:
     """
     gets the NN path and returns the rotated version for you
+    requires the true start node for rotation
     """
     path, cost = get_NN_path(
-        start, end, shelves, items_to_visit, timeout, path_map, cost_table
+        start,
+        true_start,
+        true_end,
+        shelves,
+        shelves_to_visit,
+        timeout,
+        path_map,
+        cost_table,
     )
     route = deque(path)
     route.rotate(-route.index(start_node))
     return list(route), cost
 
 
-def get_shelves_to_visit(shelves: Dict[str, Coordinate], items_to_visit: List[int]):
+def get_shelves_to_visit(
+    shelves: Dict[str, Coordinate], items_to_visit: List[int]
+) -> Set[Coordinate]:
     """
     get the coordinates of shelves to visit
     """
@@ -163,7 +174,11 @@ def get_shelves_to_visit(shelves: Dict[str, Coordinate], items_to_visit: List[in
 
 
 def nearest_neighbor(
-    shelves: Dict[str, Coordinate], items_to_visit: List[int], timeout: float
+    shelves: Dict[str, Coordinate],
+    items_to_visit: List[int],
+    timeout: float,
+    start_node: Coordinate,
+    end_node: Coordinate,
 ) -> Tuple[List[Coordinate], List[Tuple[List[Coordinate], str]], List[int], int]:
     """
     given the items to visit and the shelves in the warehouse, find the shortest
@@ -185,3 +200,19 @@ def nearest_neighbor(
     """
     start_time = time.perf_counter()
     path_map, cost_table = get_paths_and_costs(items_to_visit, shelves)
+
+    shelves_to_visit = get_shelves_to_visit(shelves, items_to_visit)
+    places_to_start = {start_node, end_node} | shelves_to_visit
+
+    for starting_position in places_to_start:
+        coordinate_path, cost = get_rotated_NN_path(
+            starting_position,
+            start_node,
+            end_node,
+            shelves,
+            shelves_to_visit,
+            timeout,
+            path_map,
+            cost_table,
+            start_node,
+        )
