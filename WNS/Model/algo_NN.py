@@ -223,7 +223,7 @@ def get_path_from_ordered_coordinate_list(
     inverted_shelves = get_inverted_dict(shelves)
 
     flat_path = list()
-    piecewise_with_target = list()
+    piecewise_with_target = [[]]
     ordered_PIDs = list()
 
     # because of the way we handle 4 side pickup, a path_map is always invalid
