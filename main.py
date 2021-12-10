@@ -299,7 +299,10 @@ def nearest_neighbor(shelves, route_arr, index):
     # set current item
     current = start_loc
     curr_item = "start"
+    return nearest_neighbor_calculate(pre_dict, t_o, visited, unvisited, current, curr_item)
 
+
+def nearest_neighbor_calculate(pre_dict, t_o, visited, unvisited, current, curr_item):
     # constant for finding minimum distance
     # keep track of the shortest item's PID
     mindistance = sys.maxsize
