@@ -313,7 +313,8 @@ def nearest_neighbor(shelves, route_arr, index):
     final_nn_path, final_nn_c, final_f_path = (0,0,0)
     for node in all_nodes:
         # remove from unvisited and store as current
-        curr_item = unvisited.difference_update(node)
+        curr_item = node
+        unvisited -= {node}
         if curr_item == "start":
             current = start_loc
         else:
