@@ -361,11 +361,12 @@ def nearest_neighbor(shelves, route_arr, index):
             nn_path.extend(p[:])
             f_path.append((p[:], str(shortest_item)))
 
-    # shelves[str(-1)] = (0,0)
-
+    # find path and cost to the end
     p,c = go_to_next_without_shelf(current, "end", shelves)
+    # more bookeeping
     nn_c = nn_c + c
     nn_path.extend(p[:])
+    # since we are at end, PID is -1
     f_path.append((p[:], str(-1)))
 
 
