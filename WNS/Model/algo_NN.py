@@ -132,7 +132,7 @@ def get_NN_path(
     this is where we force start to come after end (see nearest_neighbor)
     """
 
-    the_places_you_can_go = the_places_youll_go - {start}
+    the_places_you_can_go = the_places_youll_go - {start} | {true_end}
 
     the_places_youve_been = [start]
 
