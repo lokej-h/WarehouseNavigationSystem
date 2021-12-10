@@ -6,8 +6,8 @@ Created on Thu Dec  9 20:11:23 2021
 """
 import time
 from collections import deque, defaultdict
-from functools import lru_cache, partial
-from itertools import permutations, chain, tee
+from functools import partial
+from itertools import permutations, tee
 from typing import Dict, Tuple, List, Set, Callable
 from ..View.warehouse_view import find_item_list_path_bfs
 
@@ -58,7 +58,7 @@ def get_paths_and_costs(
     cost_table = dict()
 
     # we use the permutations function to go through every permutation of
-    # shelves i.e. AB and BA, the two is to limit each output to 2 items
+    # shelves i.e. AB and BA, the '2' is to limit each output to 2 items
     for start, end in permutations(items_to_visit + ["start", "end"], 2):
         path, cost = go_to_next_without_shelf(shelves[str(start)], end, shelves)
         key = (shelves[str(start)], shelves[str(end)])
@@ -92,17 +92,18 @@ def get_lowest_cost_path(
     create a starmap to map function calls to arguments
     then run an argmin on the iterator
     """
+    # create an iterable of function calls
     pathcosts = map(pathmaker, starting_places)
     try:
+        # get the minimum based on cost over the iterable
         return min(pathcosts, key=lambda pathcost: pathcost[1])
     except TimeoutError as e:
         print(e.message)
         # in the very unlikely event we timeout here we have to return something
-        return next(pathcosts)
+        # any nearest enighbor should return within a few seconds and be reasonably optimal
+        return next(map(pathmaker, starting_places))
 
 
-# this is only computed once thanks to @cache
-# @lru_cache
 def get_inverted_dict(d):
     """get the inverted dictionary of d, if values of d have duplicates,
     appended to list"""
@@ -113,6 +114,7 @@ def get_inverted_dict(d):
 
 
 def raise_if_timeout():
+    """raise timeout error if we run out of time for nearest neighbor"""
     end_time = time.perf_counter()
     if end_time - g.start_time > g.timeout:
         raise TimeoutError("Nearest Neighbor timed out, returning best found.")
@@ -131,6 +133,8 @@ def get_NN_path(
     returns a single NN path given a start and end
     this is where we force start to come after end (see nearest_neighbor)
     """
+    # we can go anywhere except the start (we start there), true start (forced after end)
+    # but just in case the true start and true end are the same, add the true end back in
     the_places_you_can_go = the_places_youll_go - {start, true_start} | {true_end}
     the_places_youve_been = [start]
 
@@ -182,7 +186,7 @@ def get_rotated_NN_path(
         start, true_start, true_end, shelves, shelves_to_visit, path_map, cost_table,
     )
     route = deque(path)
-    # needs if just in case start and end are same to ensure correct rotation
+    # needs 'if' just in case start and end are same to ensure correct rotation
     route.rotate(-route.index(true_start) - (1 if true_start == true_end else 0))
     return list(route), cost
 
@@ -222,21 +226,30 @@ def get_path_from_ordered_coordinate_list(
     """
     inverted_shelves = get_inverted_dict(shelves)
 
+    # prep our 3 required return values
     flat_path = list()
     piecewise_with_target = [[]]
     ordered_PIDs = list()
 
-    # because of the way we handle 4 side pickup, a path_map is always invalid
+    # start at the beginning
     current = path_steps[0]
-    # don't include end in the pairwise iteration as we have a special case
+    # don't include end in the iteration as we have a special case
     for next_node in path_steps[1:-1]:
+
+        # because of the way we handle 4 side pickup, a path_map is always invalid
+        # so instead, we need to recalculate paths between all of these points
         # path_to = path_map[current, next_node]
         path_to, _ = go_to_next_without_shelf(
             current, inverted_shelves[next_node][0], shelves
         )
+        # now we are at the last step of the path we just walked
         current = path_to[-1]
-        PIDs_targeted = tuple(set(inverted_shelves[next_node]) & set(map(str, items_to_visit)))
+        # target all items that that are in the shelf, but just the ones we want
+        PIDs_targeted = tuple(
+            set(inverted_shelves[next_node]) & set(map(str, items_to_visit))
+        )
 
+        # add to our return values
         flat_path.extend(path_to)
         piecewise_with_target.append((path_to, PIDs_targeted[0]))
         ordered_PIDs.extend(PIDs_targeted)
@@ -245,6 +258,7 @@ def get_path_from_ordered_coordinate_list(
     # using -1 flag for end as in main.py
     flat_path.extend(path_to)
     piecewise_with_target.append((path_to, -1))
+    # no PIDs to update for end
 
     return flat_path, piecewise_with_target, ordered_PIDs
 
@@ -274,10 +288,14 @@ def nearest_neighbor(
         rotate found paths so they start at 'start' and end at 'end'
         get all items on a shelf
     """
+    # start countdown!
     g.start_time = time.perf_counter()
     g.timeout = timeout
+
+    # we need these for computation (this takes the longest)
     path_map, cost_table = get_paths_and_costs(items_to_visit, shelves)
 
+    # prune off duplicates in the places we need to go
     shelves_to_visit = get_shelves_to_visit(shelves, items_to_visit)
     places_to_start = {start_node, end_node} | shelves_to_visit
 
@@ -292,12 +310,15 @@ def nearest_neighbor(
         cost_table=cost_table,
     )
 
+    # the crux: get the lowest cost path of all our starting points
     min_path, min_cost = get_lowest_cost_path(
         get_started_rotated_NN_path, places_to_start
     )
 
     # recover actual path
     return (
-        *get_path_from_ordered_coordinate_list(min_path, shelves, path_map, items_to_visit),
+        *get_path_from_ordered_coordinate_list(
+            min_path, shelves, path_map, items_to_visit
+        ),
         min_cost,
     )
