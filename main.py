@@ -43,18 +43,18 @@ end_loc = (0,0)
 def preprocess_distances(route_arr, shelves):
 
     pre_dict = dict()
-
+    # calculate cost between all shelf locations with each other shelf location bfs
     for i in range(0, len(route_arr)):
         for j in range(i+1, len(route_arr)):
             path, cost = WNS.find_item_list_path_bfs(shelves[str(route_arr[i])], route_arr[j], shelves)
             pre_dict[(route_arr[i], route_arr[j])] = cost
             pre_dict[(route_arr[j], route_arr[i])] = cost
-
+    # calculate cost between all shelves with start location bfs
     for x in range(0, len(route_arr)):
         path, cost = WNS.find_item_list_path_bfs(start_loc, route_arr[x], shelves)
         pre_dict[("start", route_arr[x])] = cost
         pre_dict[(route_arr[x], "start")] = cost
-
+    # calculate cost between all shelves with end location bfs
     for x in range(0, len(route_arr)):
         path, cost = WNS.find_item_list_path_bfs(end_loc, route_arr[x], shelves)
         pre_dict[("end", route_arr[x])] = cost
@@ -62,11 +62,12 @@ def preprocess_distances(route_arr, shelves):
 
     return pre_dict
 
-#this function creates a dictionary that contains the cost,and path between every two items in the input route array using BFS
+# this function creates a dictionary that contains the cost,and path between every two items in the input route array using BFS
 def preprocess_with_paths_bfs(route_arr, shelves):
 
     path_pre_dict = dict()
-
+    
+    # calculate cost between products in path and other products bfs
     for i in range(0, len(route_arr)):
         for j in range(i+1, len(route_arr)):
             path, cost = WNS.find_item_list_path_bfs(shelves[str(route_arr[i])], route_arr[j], shelves)
@@ -74,6 +75,7 @@ def preprocess_with_paths_bfs(route_arr, shelves):
             path.reverse()
             path_pre_dict[(route_arr[j], route_arr[i])] = (cost, path[:])
 
+    # calculate cost between products and start/end point bfs
     for x in range(0, len(route_arr)):
         path, cost = WNS.find_item_list_path_bfs((0,0), route_arr[x], shelves)
         path_pre_dict[(-1, route_arr[x])] = (cost, path[:])
@@ -86,13 +88,14 @@ def preprocess_with_paths_bfs(route_arr, shelves):
 def dfs_preprocess_distances(route_arr, shelves):
 
     pre_dict = dict()
-
+    # calculate cost between products in path and other products dfs
     for i in range(0, len(route_arr)):
         for j in range(i+1, len(route_arr)):
             path, cost = WNS.find_item_list_path_dfs(shelves[str(route_arr[i])], route_arr[j], shelves)
             pre_dict[(route_arr[i], route_arr[j])] = cost
             pre_dict[(route_arr[j], route_arr[i])] = cost
 
+    # calculate cost between products and start/end point dfs
     for x in range(0, len(route_arr)):
         path, cost = WNS.find_item_list_path_dfs((0,0), route_arr[x], shelves)
         pre_dict[(-1, route_arr[x])] = cost
@@ -110,6 +113,7 @@ def calculate_tsp_distance(end, pre_dict, shelves):
     right = 1
 
     total_cost = 0
+    # calculates total cost of route
     while(right < len(mod_end)):
         if((mod_end[left], mod_end[right]) in pre_dict):
             total_cost = total_cost + pre_dict[(mod_end[left], mod_end[right])]
