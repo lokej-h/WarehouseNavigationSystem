@@ -11,6 +11,7 @@ import sys
 import time
 from collections import deque, defaultdict
 from functools import cache
+from itertools import chain
 
 
 #backup variables for max cost path and order of items
@@ -358,6 +359,9 @@ def nearest_neighbor_calculate(pre_dict, t_o, visited, unvisited, current, curr_
 
     same = False #if two or more items in succession are on the same shelf don't do any additional calculation, all items can be picked up from one spot.
 
+    # node_starting_from = current
+    node_starting_from_PID = curr_item
+
     # handles 1 item at a time i.e. if there are duplicates, that's one iter
     while (len(unvisited) > 0):
         end_time = time.perf_counter()
@@ -406,12 +410,26 @@ def nearest_neighbor_calculate(pre_dict, t_o, visited, unvisited, current, curr_
             f_path.append((p[:], str(shortest_item)))
 
     # find path and cost to the end
-    p,c = go_to_next_without_shelf(current, "end", shelves)
+    p,c = go_to_next_without_shelf(current, node_starting_from_PID, shelves)
     # more bookeeping
     nn_c = nn_c + c
     nn_path.extend(p[:])
     # since we are at end, PID is -1
     f_path.append((p[:], str(-1)))
+
+    # rotate back so that we have our start location at the front
+    paths = deque(f_path)
+    # I don't know why but there's an empty list at index 0
+    paths.popleft()
+    # we have to do some crazy stuff to get the index to rotate by, no kwarg for index
+    # https://stackoverflow.com/questions/9542738/python-find-in-list
+    paths.rotate(-next(i for i, x in enumerate(paths) if x[1] == 'start')-1)
+
+    # regenerate the lists we need to return
+    nn_path = [i for i in chain.from_iterable([p for p,_ in paths])]
+    f_path = [] + list(paths)
+    # update the global first and last index are guaranteed to be the start/end nodes
+    e = [pid for _, pid in paths][1:-2]
 
 
     return nn_path,nn_c, f_path
