@@ -7,8 +7,8 @@ Created on Thu Dec  9 20:11:23 2021
 import time
 from collections import deque, defaultdict
 from functools import cached_property, partial
-from itertools import chain, permutations, starmap, tee
-from typings import Dict, Tuple, List, Set, Callable
+from itertools import permutations, chain, tee
+from typing import Dict, Tuple, List, Set, Callable
 from ..View.warehouse_view import find_item_list_path_bfs
 
 Coordinate = Tuple[int, int]
@@ -59,11 +59,11 @@ def get_paths_and_costs(
 
     # we use the permutations function to go through every permutation of
     # shelves i.e. AB and BA, the two is to limit each output to 2 items
-    for start, end in permutations(items_to_visit, 2):
+    for start, end in permutations(items_to_visit + ["start", "end"], 2):
         path, cost = find_item_list_path_bfs(shelves[str(start)], end, shelves)
-        key = (start, end)
+        key = (shelves[str(start)], shelves[str(end)])
         path_map[key] = path
-        cost_table[set(key)] = cost
+        cost_table[frozenset(key)] = cost
     return path_map, cost_table
 
 
@@ -79,7 +79,7 @@ def get_nearest_neighbor(
     cost_table: Dict[Set[Tuple[Coordinate, Coordinate]], int],
 ):
     """gets the nearest neighbor to node"""
-    return min(available_neighbors, key=lambda v: cost_table[node, v])
+    return min(available_neighbors, key=lambda v: cost_table[frozenset((node, v))])
 
 
 def get_lowest_cost_path(
@@ -92,7 +92,7 @@ def get_lowest_cost_path(
     create a starmap to map function calls to arguments
     then run an argmin on the iterator
     """
-    pathcosts = starmap(pathmaker, starting_places)
+    pathcosts = map(pathmaker, starting_places)
     try:
         return min(pathcosts, key=lambda path, cost: cost)
     except TimeoutError as e:
@@ -146,7 +146,7 @@ def get_NN_path(
             cost_table,
         )
 
-        cost += cost_table[{where_you_are, nearest_neighbor}]
+        cost += cost_table[frozenset((where_you_are, nearest_neighbor))]
 
         where_you_are = nearest_neighbor
 
@@ -162,7 +162,7 @@ def get_NN_path(
     # add the last leg home
     # we don't need to add the start back to the places youve been because
     # that would end up with a duplicate node which we'd only remove later
-    cost += cost_table[{where_you_are, start}]
+    cost += cost_table[frozenset((where_you_are, start))]
     return the_places_youve_been, cost
 
 
@@ -193,7 +193,7 @@ def get_shelves_to_visit(
     """
     get the coordinates of shelves to visit
     """
-    return {shelves[item] for item in items_to_visit}
+    return {shelves[str(item)] for item in items_to_visit}
 
 
 def get_path_from_ordered_coordinate_list(
@@ -264,8 +264,8 @@ def nearest_neighbor(
     # create a much simpler version of the function for easier calls
     get_started_rotated_NN_path = partial(
         get_rotated_NN_path,
-        start_node=start_node,
-        end_node=end_node,
+        true_start=start_node,
+        true_end=end_node,
         shelves=shelves,
         shelves_to_visit=shelves_to_visit,
         path_map=path_map,
