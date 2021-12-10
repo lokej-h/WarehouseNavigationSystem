@@ -1,6 +1,6 @@
 """
 
-All imports in __init__.py are exposed to the outside module, 
+All imports in __init__.py are exposed to the outside module,
 this helps keep the importing module’s namespace clean.
 
 """
@@ -16,6 +16,7 @@ from .View.warehouse_view import (
 )
 from .View.path_view import show_path
 from .Model.path_model import prep_data_for_computation, find_item, find_item_list_path
+from .Model.algo_NN import nearest_neighbor
 from ._config import config
 from .View.menu import MenuDecision
 
