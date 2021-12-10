@@ -318,7 +318,7 @@ def nearest_neighbor(shelves, route_arr, index):
         if curr_item == "start":
             current = start_loc
         else:
-            current = shelves[node]
+            current = shelves[str(node)]
 
         nn_path, nn_c, f_path = nearest_neighbor_calculate(pre_dict, t_o, visited, unvisited, current, curr_item)
         if nn_c < min_distance_found:
