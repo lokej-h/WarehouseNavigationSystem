@@ -9,7 +9,8 @@ import WNS
 import sys
 
 import time
-
+from collections import deque, defaultdict
+from functools import cache
 
 
 #backup variables for max cost path and order of items
@@ -414,6 +415,26 @@ def nearest_neighbor_calculate(pre_dict, t_o, visited, unvisited, current, curr_
 
 
     return nn_path,nn_c, f_path
+
+# this is only computed once thanks to @cache
+@cache
+def get_inverted_dict(d):
+    '''get the inverted dictionary of d, if values of d have duplicates,
+    appended to list'''
+    inverted = defaultdict(list)
+    for k,v in d.items():
+        inverted[v].append(k)
+    return inverted
+
+
+def get_all_items_where_we_are(location, shelves):
+    inverted_shelves = get_inverted_dict(shelves)
+    return inverted_shelves[location]
+
+
+def get_nearest_neighbor(node, available_neighbors, cost_table):
+    return min(available_neighbors, key=lambda v: cost_table[node, v])
+
 
 def go_to_next_without_shelf(start, end, shelves):
     # find path and cost to item
